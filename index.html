@@ -84,6 +84,52 @@ html,body{height:100%}
 @media (min-height:560px){html,body{overflow:hidden}}
 @media (max-width:520px){.btn{height:50px;padding:0 20px;font-size:12.5px}.feat{flex-direction:column;letter-spacing:.16em;gap:.7em}.feat .fg{gap:.8em}.feat .fm{display:none}}
 
+/* ---------------- the camera: shutter, rain, HUD, trackers that lose you */
+.shut{position:absolute;inset:0;z-index:8;pointer-events:none}
+.shut i{position:absolute;left:0;right:0;height:50.2%;background:#030210;transform-origin:top;animation:shOpen .95s .12s cubic-bezier(.75,0,.15,1) both}
+.shut i:first-child{top:0}.shut i:last-child{bottom:0;transform-origin:bottom}
+.shut::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--teal);transform:scaleX(0);animation:shLine .5s cubic-bezier(.7,0,.2,1) both,shFade .3s .8s both}
+@keyframes shOpen{to{transform:scaleY(0)}}
+@keyframes shLine{to{transform:scaleX(1)}}
+@keyframes shFade{to{opacity:0}}
+.shut.close i{animation:shClose .36s cubic-bezier(.7,0,.2,1) both}
+@keyframes shClose{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.shut.close::after{animation:none;opacity:0}
+#rain{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-1;pointer-events:none}
+.hud{position:absolute;inset:clamp(12px,2vw,24px);z-index:1;pointer-events:none;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.24em;color:rgba(246,244,255,.72);animation:hudIn .6s .9s var(--ease) both}
+@keyframes hudIn{from{opacity:0;transform:scale(1.02)}}
+.hc{position:absolute;width:22px;height:22px;border:0 solid rgba(246,244,255,.6)}
+.hc.tl{left:0;top:0;border-left-width:1.5px;border-top-width:1.5px}.hc.tr{right:0;top:0;border-right-width:1.5px;border-top-width:1.5px}
+.hc.bl{left:0;bottom:0;border-left-width:1.5px;border-bottom-width:1.5px}.hc.br{right:0;bottom:0;border-right-width:1.5px;border-bottom-width:1.5px}
+.hud .rec{position:absolute;left:34px;top:4px;display:flex;align-items:center;gap:9px}
+.hud .rec b{width:7px;height:7px;border-radius:50%;background:#ff3355;animation:recB 1.2s steps(1) infinite}
+@keyframes recB{50%{opacity:0}}
+.hud .clk{position:absolute;right:34px;top:4px;font-variant-numeric:tabular-nums}
+.sweep{position:absolute;left:0;right:0;top:0;height:1px;z-index:1;pointer-events:none;background:rgba(46,230,214,.35);box-shadow:0 0 0 1px rgba(46,230,214,.06);opacity:0;animation:sweep 9s 2.4s linear infinite}
+@keyframes sweep{0%{transform:translateY(0);opacity:0}3%{opacity:1}30%{transform:translateY(100svh);opacity:.9}31%,100%{transform:translateY(100svh);opacity:0}}
+.trk{position:absolute;inset:0;z-index:0;pointer-events:none}
+.tg{position:absolute;left:0;top:0;width:var(--s,84px);height:var(--s,84px);translate:-50% -50%;color:#ff5577;transition:width .9s cubic-bezier(.2,.8,.2,1),height .9s cubic-bezier(.2,.8,.2,1),color .2s;animation:tgIn .35s var(--ease) both}
+@keyframes tgIn{from{opacity:0;scale:1.25}}
+.tg i{position:absolute;width:10px;height:10px;border:0 solid currentColor}
+.tg i:nth-child(1){left:0;top:0;border-left-width:1.5px;border-top-width:1.5px}.tg i:nth-child(2){right:0;top:0;border-right-width:1.5px;border-top-width:1.5px}
+.tg i:nth-child(3){left:0;bottom:0;border-left-width:1.5px;border-bottom-width:1.5px}.tg i:nth-child(4){right:0;bottom:0;border-right-width:1.5px;border-bottom-width:1.5px}
+.tg::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px;background:currentColor}
+.tg span{position:absolute;left:50%;top:calc(100% + 7px);translate:-50% 0;white-space:nowrap;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.2em;padding:2px 6px;background:rgba(3,2,16,.62);color:currentColor}
+.tg.lost{color:var(--teal);animation:tgLost .32s steps(3) both}
+.tg.lost::after{display:none}
+@keyframes tgLost{0%{translate:-46% -50%;filter:drop-shadow(3px 0 0 var(--mag))}33%{translate:-55% -48%;filter:drop-shadow(-3px 0 0 var(--mag))}66%{translate:-49% -53%}100%{translate:-50% -50%;filter:none}}
+.tg.out{opacity:0;transition:opacity .5s}
+.wm.gl .l{animation:glt .24s steps(2) both}
+.wm.gl .l:nth-child(2){animation-delay:.03s}.wm.gl .l:nth-child(3){animation-delay:.06s}.wm.gl .l:nth-child(4){animation-delay:.02s}
+@keyframes glt{0%{transform:translateX(.035em);text-shadow:-.05em 0 var(--teal),.05em 0 var(--mag),.085em .085em 0 var(--ink2);clip-path:inset(0 0 46% 0)}50%{transform:translateX(-.03em);text-shadow:.05em 0 var(--teal),-.04em 0 var(--mag);clip-path:inset(38% 0 0 0)}}
+.feat [data-t]{display:inline-block;min-width:1ch}
+.btn .bl{display:inline-block}
+.btn.pri svg{animation:mask 5.2s 2.6s ease-in-out infinite;transform-origin:50% 55%}
+@keyframes mask{0%,92%,100%{transform:none}95%{transform:scaleY(.12)}}
+.stack{will-change:transform}
+@media (pointer:fine){.hero{cursor:crosshair}.hero .btn,.hero a,.hero button{cursor:pointer}}
+@media (max-width:520px){.hud{font-size:9px;letter-spacing:.18em}.hud .rec{left:26px;top:3px}.hud .clk{right:26px;top:3px}.hc{width:16px;height:16px}.tg span{font-size:8.5px}}
+@media (prefers-reduced-motion:reduce){.shut,.sweep,.trk,#rain{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
 </style>
 </head>
@@ -94,15 +140,20 @@ html,body{height:100%}
   <div class="poster" aria-hidden="true"></div>
   <canvas id="cityGL" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
-  <div class="stack">
+  <canvas id="rain" aria-hidden="true"></canvas>
+  <div class="sweep" aria-hidden="true"></div>
+  <div class="trk" id="trk" aria-hidden="true"></div>
+  <div class="hud" aria-hidden="true"><i class="hc tl"></i><i class="hc tr"></i><i class="hc bl"></i><i class="hc br"></i><span class="rec"><b></b>REC</span><span class="clk" id="hudClk"></span></div>
+  <div class="stack" id="stack">
     <h1 class="wm" id="wm" aria-label="anon"><span class="l" aria-hidden="true">a</span><span class="l" aria-hidden="true">n</span><span class="l" aria-hidden="true">o</span><span class="l" aria-hidden="true">n</span><i class="spk s1" aria-hidden="true"></i><i class="spk s2" aria-hidden="true"></i><i class="spk s3" aria-hidden="true"></i></h1>
-    <div class="feat"><span class="fg"><span>Fresh wallets</span><i aria-hidden="true"></i><span>Private routes</span></span><i class="fm" aria-hidden="true"></i><span class="fg"><span>Stocks</span><i aria-hidden="true"></i><span>Perps</span><i aria-hidden="true"></i><span>Trenches</span></span></div>
+    <div class="feat"><span class="fg"><span data-t>Fresh wallets</span><i aria-hidden="true"></i><span data-t>Private routes</span></span><i class="fm" aria-hidden="true"></i><span class="fg"><span data-t>Stocks</span><i aria-hidden="true"></i><span data-t>Perps</span><i aria-hidden="true"></i><span data-t>Trenches</span></span></div>
     <div class="cta">
-      <a class="btn pri" href="/app#safe"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 9.5C2 7.6 3.6 6.5 5.4 7l3.1.9c1 .3 2.1.4 3.5.4s2.5-.1 3.5-.4l3.1-.9c1.8-.5 3.4.6 3.4 2.5 0 4-2.6 7-5.6 7-1.7 0-2.7-1-3.2-2.2-.2-.5-.7-.8-1.2-.8s-1 .3-1.2.8C10.3 15.5 9.3 16.5 7.6 16.5 4.6 16.5 2 13.5 2 9.5Z"/></svg>Go anon <span class="a">→</span></a>
-      <a class="btn sec" href="/app#overview">Enter the terminal</a>
+      <a class="btn pri" href="/app#safe"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 9.5C2 7.6 3.6 6.5 5.4 7l3.1.9c1 .3 2.1.4 3.5.4s2.5-.1 3.5-.4l3.1-.9c1.8-.5 3.4.6 3.4 2.5 0 4-2.6 7-5.6 7-1.7 0-2.7-1-3.2-2.2-.2-.5-.7-.8-1.2-.8s-1 .3-1.2.8C10.3 15.5 9.3 16.5 7.6 16.5 4.6 16.5 2 13.5 2 9.5Z"/></svg><span class="bl">Go anon</span> <span class="a">→</span></a>
+      <a class="btn sec" href="/app#overview"><span class="bl">Enter the terminal</span></a>
     </div>
     <div class="links" id="caSlot"></div>
   </div>
+  <div class="shut" id="shut" aria-hidden="true"><i></i><i></i></div>
 </section>
 
 
@@ -126,17 +177,50 @@ html,body{height:100%}
     const cp = $('#cp'); if (cp) cp.onclick = () => { navigator.clipboard && navigator.clipboard.writeText(CFG.ca); cp.textContent = 'COPIED'; setTimeout(() => { cp.textContent = 'COPY'; }, 1400); };
   }
 
-  // the wordmark decodes itself, like a name being revealed
-  if (!still) {
-    const L = $$('#wm .l'), target = L.map(l => l.textContent), G = 'ABCDEFGHKMNPRSTUVWXZ0123456789';
-    L.forEach(l => { l.classList.add('s'); l.textContent = G[Math.floor(Math.random() * G.length)]; });
-    const t0 = performance.now();
+  const rnd = n => Math.floor(Math.random() * n), T0 = performance.now(), wm = $('#wm'), stack = $('#stack');
+  // the wordmark decodes itself, like a name being revealed (again on hover)
+  const L = $$('#wm .l'), target = L.map(l => l.textContent), G = 'ABCDEFGHKMNPRSTUVWXZ0123456789';
+  let wmBusy = false;
+  function decodeWM(base, step) {
+    if (wmBusy) return; wmBusy = true;
+    L.forEach(l => { l.classList.add('s'); l.textContent = G[rnd(G.length)]; });
+    const t0 = performance.now(), fin = () => { L.forEach((l, i) => { l.textContent = target[i]; l.classList.remove('s'); }); wmBusy = false; };
     (function tick(now) {
       let done = 0;
-      L.forEach((l, i) => { const end = 520 + i * 190; if (now - t0 >= end) { if (l.classList.contains('s')) { l.textContent = target[i]; l.classList.remove('s'); } done++; } else if (Math.random() < 0.55) l.textContent = G[Math.floor(Math.random() * G.length)]; });
-      if (done < L.length) requestAnimationFrame(tick);
+      L.forEach((l, i) => { if (now - t0 >= base + i * step) { if (l.classList.contains('s')) { l.textContent = target[i]; l.classList.remove('s'); } done++; } else if (Math.random() < 0.55) l.textContent = G[rnd(G.length)]; });
+      if (done < L.length) requestAnimationFrame(tick); else fin();
     })(t0);
-    setTimeout(() => L.forEach((l, i) => { l.textContent = target[i]; l.classList.remove('s'); }), 2600);
+    setTimeout(() => { if (wmBusy) fin(); }, base + L.length * step + 800);
+  }
+  if (!still) {
+    decodeWM(520, 190);
+    if (fine) { let lastH = 0; wm.addEventListener('pointerenter', () => { if (performance.now() - lastH > 1600) { lastH = performance.now(); decodeWM(110, 75); } }); }
+    // now and then the signal tears
+    (function glitch() { setTimeout(() => { if (!document.hidden && !wmBusy) { wm.classList.add('gl'); setTimeout(() => wm.classList.remove('gl'), 320); } glitch(); }, 5200 + Math.random() * 3800); })();
+  }
+
+  // words resolve out of noise, left to right; one re-encrypts every few seconds
+  const NZ = 'ABCDEFGHJKLNPRSTUVXYZ0123456789', busy = new Set();
+  function decrypt(el, ms, delay) {
+    if (busy.has(el)) return; busy.add(el);
+    const t = el.dataset.t || el.textContent; el.dataset.t = t;
+    el.style.width = el.getBoundingClientRect().width + 'px'; el.style.overflow = 'hidden'; el.style.whiteSpace = 'nowrap';
+    const t0 = performance.now() + (delay || 0); let lastN = 0;
+    const noise = from => t.slice(0, from) + t.slice(from).replace(/\S/g, () => NZ[rnd(NZ.length)]);
+    el.textContent = noise(0);
+    (function step(now) {
+      const k = Math.max(0, Math.min(1, (now - t0) / ms)), n = Math.floor(k * t.length);
+      if (now - lastN > 45 || k >= 1) { lastN = now; el.textContent = k >= 1 ? t : noise(n); }
+      if (k < 1) requestAnimationFrame(step); else { el.style.width = el.style.overflow = el.style.whiteSpace = ''; busy.delete(el); }
+    })(performance.now());
+  }
+  const words = $$('.feat [data-t]');
+  if (!still) {
+    Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 900))]).then(() => {
+      const el0 = performance.now() - T0; words.forEach((w, i) => decrypt(w, 430, Math.max(0, 620 - el0) + i * 90));
+      (function churn() { setTimeout(() => { if (!document.hidden) decrypt(words[rnd(words.length)], 520, 0); churn(); }, 5600 + Math.random() * 3600); })();
+    });
+    if (fine) $$('.btn .bl').forEach(b => b.closest('.btn').addEventListener('pointerenter', () => decrypt(b, 360, 0)));
   }
 
   // the city at night: lights waking, a searchlight working the water (the poster shows until the first frame)
@@ -145,13 +229,86 @@ html,body{height:100%}
   function glOk() { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } }
   function boot() {
     if (still || !glOk()) return;
-    import('/assets/js/city3d.js?v=a1').then(m => {
+    import('/assets/js/city3d.js?v=a3').then(m => {
       city = m.startCity($('#cityGL'), { pal: NIGHT, fog: 0.0002, exposure: 1.0, night: 1, sunElev: 1, sunAz: 284, landmark: false, onFirst: () => $('#cityGL').classList.add('on') });
     }).catch(e => console.warn('city', e));
   }
   if (document.readyState === 'complete') setTimeout(boot, 60); else addEventListener('load', () => setTimeout(boot, 60));
   if (fine && !still) addEventListener('pointermove', e => { if (city && city.setPointer) city.setPointer(e.clientX / innerWidth * 2 - 1, e.clientY / innerHeight * 2 - 1); }, { passive: true });
   if (fine && !still) $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.translate = `${((e.clientX - r.left) / r.width - 0.5) * 10}px ${((e.clientY - r.top) / r.height - 0.5) * 8}px`; }); b.addEventListener('pointerleave', () => { b.style.translate = '0 0'; }); });
+
+  // ---------------------------------------------------------------- the camera: clock, rain, trackers that lose you, the shutter
+  { const c = $('#hudClk'), f = () => { c.textContent = new Date().toISOString().slice(11, 19) + ' UTC'; }; f(); setInterval(f, 1000); }
+
+  // rain: streaks with a wind, nearer ones longer and brighter; splashes where they meet the water
+  function rain() {
+    const c = $('#rain'); if (!c || !c.getContext) return; const g = c.getContext('2d');
+    let W = 0, H = 0, D = [], S = [], last = 0, raf = 0;
+    const WIND = -0.16;
+    const mk = any => { const z = Math.pow(Math.random(), 1.6); return { x: Math.random() * (W + 160) - 20, y: any ? Math.random() * H : -Math.random() * H * 0.5 - 30, z, v: 620 + z * 1100, l: 8 + z * 30, a: 0.07 + z * 0.24, land: H * (0.66 + Math.random() * 0.34), c: Math.random() < 0.1 ? (Math.random() < 0.5 ? '46,230,214' : '255,63,210') : '222,218,255' }; };
+    function size() { const r = Math.min(devicePixelRatio || 1, 1.5); W = c.clientWidth; H = c.clientHeight; c.width = Math.round(W * r); c.height = Math.round(H * r); g.setTransform(r, 0, 0, r, 0, 0); const n = Math.max(48, Math.min(170, Math.round(W * H / 8500))); D = Array.from({ length: n }, () => mk(true)); S = []; }
+    function frame(now) {
+      raf = requestAnimationFrame(frame);
+      if (now - last < 32) return; const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      g.clearRect(0, 0, W, H); g.lineCap = 'round';
+      for (const d of D) {
+        d.y += d.v * dt; d.x += WIND * d.v * dt;
+        if (d.y > d.land) { if (d.z > 0.35 && S.length < 40) S.push({ x: d.x, y: d.land, t: 0, w: 3 + d.z * 6, a: d.a }); Object.assign(d, mk(false)); continue; }
+        g.strokeStyle = `rgba(${d.c},${d.a.toFixed(3)})`; g.lineWidth = d.z > 0.7 ? 1.3 : 1;
+        g.beginPath(); g.moveTo(d.x - WIND * d.l, d.y - d.l); g.lineTo(d.x, d.y); g.stroke();
+      }
+      for (let i = S.length - 1; i >= 0; i--) {
+        const s = S[i]; s.t += dt; const k = s.t / 0.22; if (k >= 1) { S.splice(i, 1); continue; }
+        const w = s.w * (0.4 + k); g.strokeStyle = `rgba(222,218,255,${(s.a * (1 - k)).toFixed(3)})`; g.lineWidth = 1;
+        g.beginPath(); g.moveTo(s.x - w, s.y); g.lineTo(s.x - w * 0.4, s.y - 2 - k * 2); g.moveTo(s.x + w, s.y); g.lineTo(s.x + w * 0.4, s.y - 2 - k * 2); g.stroke();
+      }
+    }
+    size(); addEventListener('resize', size);
+    const vis = () => { cancelAnimationFrame(raf); raf = 0; if (!document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+    document.addEventListener('visibilitychange', vis); vis();
+  }
+
+  // trackers: a reticle locks onto a light in the city, reads noise, and loses the trail
+  const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz', trk = $('#trk');
+  let live = 0;
+  function spot() {
+    const W = innerWidth, H = innerHeight, a = wm.getBoundingClientRect(), b = $('.cta').getBoundingClientRect();
+    const box = { l: Math.min(a.left, b.left) - 50, r: Math.max(a.right, b.right) + 50, t: a.top - 40, b: b.bottom + 50 };
+    for (let k = 0; k < 40; k++) {
+      const x = 60 + Math.random() * (W - 120), y = H * (0.16 + Math.random() * 0.68);
+      if (x > box.l && x < box.r && y > box.t && y < box.b) continue;
+      return [x, y];
+    }
+    return null;
+  }
+  function track() {
+    if (document.hidden || live >= 2) return;
+    const p = spot(); if (!p) return; live++;
+    const el = document.createElement('div'); el.className = 'tg'; el.style.left = p[0].toFixed(0) + 'px'; el.style.top = p[1].toFixed(0) + 'px';
+    el.innerHTML = '<i></i><i></i><i></i><i></i><span>TRACING</span>'; trk.appendChild(el);
+    const lab = el.querySelector('span');
+    requestAnimationFrame(() => requestAnimationFrame(() => el.style.setProperty('--s', (30 + Math.random() * 16).toFixed(0) + 'px')));
+    const sc = setInterval(() => { lab.textContent = 'TRACING ' + Array.from({ length: 4 }, () => B58[rnd(58)]).join(''); }, 70);
+    setTimeout(() => { clearInterval(sc); el.classList.add('lost'); lab.textContent = 'NO TRAIL'; }, 1300 + Math.random() * 500);
+    setTimeout(() => el.classList.add('out'), 2750);
+    setTimeout(() => { el.remove(); live--; }, 3350);
+  }
+  if (!still) {
+    rain();
+    setTimeout(function loop() { track(); setTimeout(loop, 1600 + Math.random() * 1800); }, 1900);
+    if (fine) {
+      // the title floats a touch against the pointer
+      let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+      const st = () => { x += (tx - x) * 0.12; y += (ty - y) * 0.12; stack.style.transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0)`; raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.05 ? requestAnimationFrame(st) : 0; };
+      addEventListener('pointermove', e => { tx = (e.clientX / innerWidth - 0.5) * -12; ty = (e.clientY / innerHeight - 0.5) * -7; if (!raf) raf = requestAnimationFrame(st); }, { passive: true });
+    }
+    // leaving: the shutter closes, then the terminal opens
+    $$('.cta .btn').forEach(a => a.addEventListener('click', e => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault(); $('#shut').classList.add('close'); setTimeout(() => { location.href = a.href; }, 380);
+    }));
+    addEventListener('pageshow', e => { if (e.persisted) $('#shut').classList.remove('close'); });
+  }
 
 })();
 </script>
