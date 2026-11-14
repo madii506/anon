@@ -1176,7 +1176,8 @@
   }
   function route() {
     const [v, a] = decodeURIComponent(location.hash.replace(/^#/, '')).split('/');
-    if (v === '' || v === 'overview') return show('overview');
+    if (v === '' || v === 'safe' || v === 'safehouse') return show('safe');
+    if (v === 'overview') return show('overview');
     if (v === 'markets') return show('markets');
     if (v === 'portfolio') return show('portfolio');
     if (v === 'city') return show('city');

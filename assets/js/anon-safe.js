@@ -24,6 +24,7 @@
 
   // ---------------------------------------------------------------- the identity chip
   function chip() {
+    signers();
     const slot = $('#wslot'); if (!slot) return;
     const W = WAL.W, M = WAL.MAIN;
     if (!W.addr) { slot.innerHTML = `<span class="idbtns"><button class="kb" data-connect>Connect</button><button class="kb hot anon-go" id="goAnon">${MASK}Go anon</button></span>`; $('#goAnon').onclick = goAnon; return; }
@@ -31,6 +32,15 @@
     slot.innerHTML = `<button class="idc ${fresh ? 'is-anon' : 'is-main'}" id="idc" aria-haspopup="menu" aria-expanded="false" title="${fresh ? 'Trades are signed by this fresh wallet' : 'Trades are signed by your main wallet'}">${fresh ? MASK : EYE}<b>${esc(fresh ? W.name : 'main')}</b><span>${short(W.addr)}</span><i>▾</i></button>`;
     $('#idc').onclick = e => { e.stopPropagation(); menu(); };
     void M;
+  }
+  // under every trade button: which wallet will sign it
+  function signers() {
+    const W = WAL.W;
+    document.querySelectorAll('[data-signer]').forEach(el => {
+      if (!W.addr) { el.className = 'signer'; el.innerHTML = ''; return; }
+      if (W.fresh) { el.className = 'signer anon'; el.innerHTML = `${MASK}<span>signs as <b>${esc(W.name)}</b> · a fresh wallet, not linked to you</span>`; }
+      else { el.className = 'signer main'; el.innerHTML = `${EYE}<span>signs as your <b>main wallet</b> · public and tied to you · <a href="#safe">go anon</a></span>`; }
+    });
   }
   function menu() {
     let m = $('#idm'); if (m) { m.remove(); return; }
@@ -89,25 +99,94 @@
   function build(el) {
     el.innerHTML = `
     <div class="sf-h"><div><h1>Safehouse</h1><div class="lead">Fresh wallets made in this browser. Switch one on and every trade is signed by it, so your main wallet never touches the trade.</div></div><div class="sf-state" id="sfState"></div></div>
+    <div class="sf-top">
+      <div class="pn tz">
+        <div class="sf-sec"><span class="eb">01</span><b>your wallet is public</b><span class="mute">read live from Solana</span></div>
+        <p class="tz-l">Paste any wallet. This is what a stranger sees in two seconds: who sent it its first SOL, and who funded that wallet.</p>
+        <form class="tz-f" id="tzF" autocomplete="off"><input id="tzQ" spellcheck="false" placeholder="paste a Solana wallet address" aria-label="Solana wallet address"><button class="kb hot" id="tzB" type="submit">trace</button></form>
+        <div class="tz-ex" id="tzEx"></div>
+        <div class="tz-o" id="tzO"><div class="tz-e">The trail shows up here.</div></div>
+      </div>
+      <div class="pn df">
+        <div class="sf-sec"><span class="eb">02</span><b>the difference</b></div>
+        <div class="df-c bad"><div class="df-h"><b>straight from your main</b><em class="tag ex">linked</em></div>
+          <div class="df-f"><i class="a">MAIN</i><span class="ln r"><em>1 SOL</em></span><i class="c">NEW</i></div>
+          <p>One transfer. Anyone who opens the new wallet sees your main as its funder, and everything it trades leads back to you.</p></div>
+        <div class="df-c good"><div class="df-h"><b>through anon</b><em class="tag fr">unlinked</em></div>
+          <div class="df-f"><i class="a">MAIN</i><span class="ln"><em>1 SOL</em></span><i class="m">DEP</i></div>
+          <div class="df-g"><span>two unrelated transfers</span></div>
+          <div class="df-f"><i class="s">SOLVER</i><span class="ln"><em>≈1 SOL</em></span><i class="c">ANON</i></div>
+          <p>Your main pays a one-time deposit address. A NEAR Intents solver that pays thousands of wallets pays the fresh one. Nothing on-chain runs between your two wallets.</p></div>
+      </div>
+    </div>
     <div class="sf-grid">
       <div class="sf-col">
-        <div class="sf-sec"><span class="eb">01</span><b>your wallets</b><button class="kb hot" id="sfNew">+ new fresh wallet</button></div>
+        <div class="sf-sec"><span class="eb">03</span><b>your wallets</b><button class="kb hot" id="sfNew">+ new fresh wallet</button></div>
         <div id="sfMain"></div>
         <div class="sf-list" id="sfList"></div>
       </div>
       <div class="sf-col">
-        <div class="sf-sec"><span class="eb">02</span><b>fund privately</b><span class="seg" id="sfTab"><button data-t="hop" class="on">fast hop</button><button data-t="zec">shielded</button></span></div>
+        <div class="sf-sec"><span class="eb">04</span><b>fund privately</b><span class="seg" id="sfTab"><button data-t="hop" class="on">fast hop</button><button data-t="zec">shielded</button></span></div>
         <div class="pn sf-fund" id="sfFund"></div>
-        <div class="sf-sec"><span class="eb">03</span><b>cash out</b></div>
+        <div class="sf-sec"><span class="eb">05</span><b>cash out</b></div>
         <div class="pn sf-out" id="sfOut"></div>
-        <div class="sf-sec"><span class="eb">04</span><b>routes</b><span class="mute">live from NEAR Intents</span></div>
+        <div class="sf-sec"><span class="eb">06</span><b>routes</b><span class="mute">live from NEAR Intents</span></div>
         <div class="sf-routes" id="sfRoutes"></div>
       </div>
+    </div>
+    <div class="sf-sec sf-wide"><span class="eb">07</span><b>the rules</b></div>
+    <div class="rl">
+      <div class="pn rl-c"><div class="rl-h"><i></i>anon never</div><ul>
+        <li><b>Holds your funds.</b> Routes pay your wallets directly; nothing sits with anon.</li>
+        <li><b>Sees your keys.</b> Fresh keys are made and kept in this browser only.</li>
+        <li><b>Asks for a seed phrase.</b> Your main wallet only signs what it shows you.</li>
+        <li><b>Tracks you.</b> No accounts, no cookies, no analytics.</li>
+        <li><b>Adds a fee to trades.</b> You pay the network and the route, both shown first.</li></ul></div>
+      <div class="pn rl-c lim"><div class="rl-h"><i></i>honest limits</div><ul>
+        <li><b>Amounts and timing can match.</b> 1.234 SOL in and 1.233 out a minute later is easy to pair. Use round amounts and wait.</li>
+        <li><b>The route provider sees its own swap.</b> NEAR Intents knows both ends of a route it fills.</li>
+        <li><b>Your IP reaches the APIs.</b> Use a VPN if that matters to you.</li>
+        <li><b>You can undo it.</b> Sending between your main and a fresh wallet links them again.</li></ul></div>
+    </div>
+    <div class="sf-sec sf-wide"><span class="eb">08</span><b>faq</b></div>
+    <div class="fq">
+      <details><summary>Is anon a mixer?<i>+</i></summary><p>No. anon never pools or holds anyone's funds. A fresh wallet is a new keypair in your browser, and a route is a swap filled by NEAR Intents solvers, who pay the destination from their own funds. The privacy comes from a new wallet plus a swap, not from mixing.</p></details>
+      <details><summary>Where does a fresh wallet's key live?<i>+</i></summary><p>Only in this browser's storage. anon's servers never see it. Use export key to copy it into Phantom, Solflare or Backpack, and do that before you clear your browser data, which deletes it.</p></details>
+      <details><summary>Do I still need Phantom?<i>+</i></summary><p>Only to fund a fresh wallet from your main one. Once a fresh wallet holds SOL, it trades by itself. While it is on, trades go through without a popup, because the key is in this browser.</p></details>
+      <details><summary>What does it cost?<i>+</i></summary><p>anon adds no fee. A fast hop costs a fraction of a percent through NEAR Intents (the live quote shows it), and the shielded route a little more across its two legs. Trades pay the Solana network fee and the route's price impact, both shown before you confirm.</p></details>
+      <details><summary>What if a route fails?<i>+</i></summary><p>NEAR Intents refunds the deposit to its refund address: your main wallet when you fund, the fresh wallet when you cash out. Every route shows its live status above, with links to the transactions.</p></details>
+      <details><summary>How much should a fresh wallet hold?<i>+</i></summary><p>Whatever you plan to trade, plus about 0.01 SOL for network fees. Perps need at least $10 of collateral. Round amounts and some time between funding and trading make the break stronger.</p></details>
+      <details><summary>Does it work on my phone?<i>+</i></summary><p>Yes. Fresh wallets live in whatever browser you use. To fund one from your main wallet on a phone, open anon inside Phantom's or Solflare's own browser so the main wallet can sign.</p></details>
+      <details><summary>Is anon affiliated with NEAR, Zcash, Jupiter, pump.fun or any game?<i>+</i></summary><p>No. anon is independent and uses their public APIs. Nothing here is financial or legal advice. xStocks are not offered to US persons.</p></details>
     </div>`;
     $('#sfNew').onclick = () => newFresh(!WAL.W.fresh);
     $('#sfTab').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; UI.tab = b.dataset.t; UI.q = null; [...$('#sfTab').children].forEach(x => x.classList.toggle('on', x === b)); paintFund(); quoteSoon(); };
     el.addEventListener('click', onClick);
     el.addEventListener('input', onInput);
+    const EX = ['5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9', 'GThUX1Atko4tqhN2NaiTazWSeFWMuiUvfFnyJyUghFMJ'];
+    const exs = () => { $('#tzEx').innerHTML = 'try: ' + EX.map(a => `<button type="button" data-tz="${a}">${short(a)}</button>`).join(' · ') + (WAL.MAIN.addr ? ` · <button type="button" data-tz="${WAL.MAIN.addr}">your main wallet</button>` : '') + (WAL.W.fresh ? ` · <button type="button" data-tz="${WAL.W.addr}">${esc(WAL.W.name)}</button>` : ''); };
+    exs(); WAL.on(exs);
+    $('#tzEx').addEventListener('click', e => { const b = e.target.closest('[data-tz]'); if (!b) return; $('#tzQ').value = b.dataset.tz; trace(); });
+    $('#tzF').addEventListener('submit', e => { e.preventDefault(); trace(); });
+  }
+  const when = t => t ? new Date(t * 1000).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'unknown date';
+  async function trace() {
+    const a = $('#tzQ').value.trim(), out = $('#tzO');
+    if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a)) { out.innerHTML = '<div class="tz-e">That doesn\'t look like a Solana address.</div>'; return; }
+    $('#tzB').disabled = true; out.innerHTML = '<div class="tz-e">reading Solana…</div>';
+    try {
+      const r = await api('trace', { addr: a }), h1 = r.hop1, f1 = h1 && h1.first, f2 = r.hop2 && r.hop2.first;
+      const node = (k, cls, ad, sub) => `<div class="tz-n ${cls}"><i>${k}</i><div><button class="ad" data-copy="${esc(ad)}">${esc(ad)}</button><span>${sub}</span></div><a href="https://solscan.io/account/${esc(ad)}" target="_blank" rel="noopener">↗</a></div>`;
+      let h = node('YOU', '', a, (r.sol != null ? r.sol.toFixed(3) + ' SOL now · ' : '') + (h1.txs ? (h1.more ? h1.txs.toLocaleString() + '+' : h1.txs.toLocaleString()) + ' transactions' : 'no history'));
+      if (f1 && f1.funder) {
+        h += `<div class="tz-l2">funded by · ${f1.sol != null ? f1.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f1.time))}</div>` + node('1', 'f', f1.funder, 'its first SOL came from here');
+        if (f2 && f2.funder) h += `<div class="tz-l2">funded by · ${f2.sol != null ? f2.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f2.time))}</div>` + node('2', 'f2', f2.funder, 'two hops back');
+        h += `<div class="tz-v">Linked to <b>${esc(short(f1.funder))}</b>${f2 && f2.funder ? ' and through it to <b>' + esc(short(f2.funder)) + '</b>' : ''}. Anyone can follow that line. A fresh wallet funded through a route starts its trail at a solver instead.</div>`;
+      } else if (h1.more) h += `<div class="tz-v">${h1.txs.toLocaleString()}+ transactions: older than this quick trace pages back. Explorers and analytics tools still reach it.</div>`;
+      else h += '<div class="tz-v ok">No funding trail found: this wallet has no history yet, or its first SOL came in a way this trace does not read.</div>';
+      out.innerHTML = h;
+    } catch (e) { out.innerHTML = `<div class="tz-e">Could not read Solana right now (${esc(e.message)}). Try again in a moment.</div>`; }
+    $('#tzB').disabled = false;
   }
   function walletsHTML() {
     const M = WAL.MAIN, F = WAL.fresh(), act = WAL.active();
