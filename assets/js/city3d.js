@@ -551,6 +551,13 @@ totalEmissiveRadiance += winGlow;`);
   const tBody = inst(new THREE.BoxGeometry(1.9, 1.2, 4.6).translate(0, 0.9, 0), carM, one, () => col(pick(PAINT)), true, bridge);
   const tHead = inst(new THREE.BoxGeometry(1.6, 0.3, 0.1), new THREE.MeshBasicMaterial({ color: hot('#fff1d6', 5) }), one, null, true, bridge);
   const tTail = inst(new THREE.BoxGeometry(1.6, 0.3, 0.1), new THREE.MeshBasicMaterial({ color: hot('#ff2448', 4.4) }), one, null, true, bridge);
+  // a pursuit: a few cruisers in the outside lanes, faster than everyone, light bars strobing red and blue (opt.cops: 0 turns it off)
+  const COPS = opt.cops === 0 ? [] : small ? [0, 3] : [0, 3, 5, 6];
+  COPS.forEach((ci, j) => { const k = traffic[ci]; k.x = j % 2 ? 8.6 : -8.6; k.v = (k.x < 0 ? 1 : -1) * (38 + R() * 9); });
+  const copOne = COPS.map(() => ({ x: 0, z: 0, w: 1, h: 1, d: 1 }));
+  const copR = inst(new THREE.BoxGeometry(1.5, 0.55, 1.1), new THREE.MeshBasicMaterial({ color: hot('#ff1f3d', 12) }), copOne, null, true, bridge);
+  const copB = inst(new THREE.BoxGeometry(1.5, 0.55, 1.1), new THREE.MeshBasicMaterial({ color: hot('#2f63ff', 14) }), copOne, null, true, bridge);
+  if (COPS.length && tBody.instanceColor) { COPS.forEach((ci, j) => tBody.setColorAt(ci, new THREE.Color(j % 2 ? '#f4f1ec' : '#16161c'))); tBody.instanceColor.needsUpdate = true; }
   const CM = new THREE.Matrix4();
   function moveTraffic(dt) {
     for (let i = 0; i < traffic.length; i++) {
@@ -561,6 +568,8 @@ totalEmissiveRadiance += winGlow;`);
       CM.makeTranslation(k.x, DECK + 1.0, k.z - f * 2.32); tTail.setMatrixAt(i, CM);
     }
     tBody.instanceMatrix.needsUpdate = tHead.instanceMatrix.needsUpdate = tTail.instanceMatrix.needsUpdate = true;
+    for (let j = 0; j < COPS.length; j++) { const k = traffic[COPS[j]]; CM.makeTranslation(k.x - 0.8, DECK + 2.4, k.z); copR.setMatrixAt(j, CM); CM.makeTranslation(k.x + 0.8, DECK + 2.4, k.z); copB.setMatrixAt(j, CM); }
+    if (COPS.length) copR.instanceMatrix.needsUpdate = copB.instanceMatrix.needsUpdate = true;
   }
 
   // ---------------------------------------------------------------- boats: yachts and speedboats with wakes, a few at anchor
@@ -755,7 +764,8 @@ totalEmissiveRadiance += winGlow;`);
     if (waterMesh.material.uniforms) waterMesh.material.uniforms.time.value = t * 0.6; else normals.offset.set(t * 0.002, t * 0.001);
     ptrX += (ptrTX - ptrX) * Math.min(1, dt * 2.2); ptrY += (ptrTY - ptrY) * Math.min(1, dt * 2.2);
     moveTraffic(dt); moveBoats(dt, t); moveGulls(t); moveHeli(t); moveCoins(dt, t); spinWheel(t); wake(t); place(t);
-    if (opt.calm) { wings.visible = heli.visible = beam.visible = spot.visible = plane.visible = false; }
+    if (COPS.length) { const q = Math.floor(t * 11) % 8; copR.visible = q === 0 || q === 2; copB.visible = q === 4 || q === 6; }
+    if (opt.calm) { wings.visible = heli.visible = beam.visible = spot.visible = plane.visible = copR.visible = copB.visible = false; }
     if (flick.length && lightsDone) { for (const f of flick) { const ph = (t / 7 + f.ph) % 1; crownMesh.setColorAt(f.i, ph > 0.09 || hash1(Math.floor(t * 15) + f.i) > 0.5 ? f.c : f.off); } crownMesh.instanceColor.needsUpdate = true; }
   };
   const frame = now => {
