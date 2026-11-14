@@ -12,10 +12,10 @@
 <meta name="twitter:image" content="https://anondot.vercel.app/assets/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#07061a">
-<link rel="icon" href="/assets/img/anon.ico" sizes="48x48">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/anon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/assets/img/anon-192.png">
-<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<link rel="icon" href="/assets/img/anon.ico?v=t3" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/anon-32.png?v=t3">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/img/anon-192.png?v=t3">
+<link rel="apple-touch-icon" href="/assets/img/anon-180t.png?v=t3">
 <link rel="preload" href="/assets/fonts/bowlby.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/unbounded.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
@@ -84,7 +84,7 @@ html,body{height:100%}
 @media (min-height:560px){html,body{overflow:hidden}}
 @media (max-width:520px){.btn{height:50px;padding:0 20px;font-size:12.5px}.feat{flex-direction:column;letter-spacing:.16em;gap:.7em}.feat .fg{gap:.8em}.feat .fm{display:none}}
 
-/* ---------------- the camera: shutter, rain, HUD, trackers that lose you */
+/* ---------------- the camera: shutter, rain, trackers that lose you */
 .shut{position:absolute;inset:0;z-index:8;pointer-events:none}
 .shut i{position:absolute;left:0;right:0;height:50.2%;background:#030210;transform-origin:top;animation:shOpen .95s .12s cubic-bezier(.75,0,.15,1) both}
 .shut i:first-child{top:0}.shut i:last-child{bottom:0;transform-origin:bottom}
@@ -96,15 +96,6 @@ html,body{height:100%}
 @keyframes shClose{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 .shut.close::after{animation:none;opacity:0}
 #rain{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-1;pointer-events:none}
-.hud{position:absolute;inset:clamp(12px,2vw,24px);z-index:1;pointer-events:none;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.24em;color:rgba(246,244,255,.72);animation:hudIn .6s .9s var(--ease) both}
-@keyframes hudIn{from{opacity:0;transform:scale(1.02)}}
-.hc{position:absolute;width:22px;height:22px;border:0 solid rgba(246,244,255,.6)}
-.hc.tl{left:0;top:0;border-left-width:1.5px;border-top-width:1.5px}.hc.tr{right:0;top:0;border-right-width:1.5px;border-top-width:1.5px}
-.hc.bl{left:0;bottom:0;border-left-width:1.5px;border-bottom-width:1.5px}.hc.br{right:0;bottom:0;border-right-width:1.5px;border-bottom-width:1.5px}
-.hud .rec{position:absolute;left:34px;top:4px;display:flex;align-items:center;gap:9px}
-.hud .rec b{width:7px;height:7px;border-radius:50%;background:#ff3355;animation:recB 1.2s steps(1) infinite}
-@keyframes recB{50%{opacity:0}}
-.hud .clk{position:absolute;right:34px;top:4px;font-variant-numeric:tabular-nums}
 .sweep{position:absolute;left:0;right:0;top:0;height:1px;z-index:1;pointer-events:none;background:rgba(46,230,214,.35);box-shadow:0 0 0 1px rgba(46,230,214,.06);opacity:0;animation:sweep 9s 2.4s linear infinite}
 @keyframes sweep{0%{transform:translateY(0);opacity:0}3%{opacity:1}30%{transform:translateY(100svh);opacity:.9}31%,100%{transform:translateY(100svh);opacity:0}}
 .trk{position:absolute;inset:0;z-index:0;pointer-events:none}
@@ -124,11 +115,9 @@ html,body{height:100%}
 @keyframes glt{0%{transform:translateX(.035em);text-shadow:-.05em 0 var(--teal),.05em 0 var(--mag),.085em .085em 0 var(--ink2);clip-path:inset(0 0 46% 0)}50%{transform:translateX(-.03em);text-shadow:.05em 0 var(--teal),-.04em 0 var(--mag);clip-path:inset(38% 0 0 0)}}
 .feat [data-t]{display:inline-block;min-width:1ch}
 .btn .bl{display:inline-block}
-.btn.pri svg{animation:mask 5.2s 2.6s ease-in-out infinite;transform-origin:50% 55%}
-@keyframes mask{0%,92%,100%{transform:none}95%{transform:scaleY(.12)}}
 .stack{will-change:transform}
 @media (pointer:fine){.hero{cursor:crosshair}.hero .btn,.hero a,.hero button{cursor:pointer}}
-@media (max-width:520px){.hud{font-size:9px;letter-spacing:.18em}.hud .rec{left:26px;top:3px}.hud .clk{right:26px;top:3px}.hc{width:16px;height:16px}.tg span{font-size:8.5px}}
+@media (max-width:520px){.tg span{font-size:8.5px}}
 @media (prefers-reduced-motion:reduce){.shut,.sweep,.trk,#rain{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
 </style>
@@ -143,12 +132,11 @@ html,body{height:100%}
   <canvas id="rain" aria-hidden="true"></canvas>
   <div class="sweep" aria-hidden="true"></div>
   <div class="trk" id="trk" aria-hidden="true"></div>
-  <div class="hud" aria-hidden="true"><i class="hc tl"></i><i class="hc tr"></i><i class="hc bl"></i><i class="hc br"></i><span class="rec"><b></b>REC</span><span class="clk" id="hudClk"></span></div>
   <div class="stack" id="stack">
     <h1 class="wm" id="wm" aria-label="anon"><span class="l" aria-hidden="true">a</span><span class="l" aria-hidden="true">n</span><span class="l" aria-hidden="true">o</span><span class="l" aria-hidden="true">n</span><i class="spk s1" aria-hidden="true"></i><i class="spk s2" aria-hidden="true"></i><i class="spk s3" aria-hidden="true"></i></h1>
     <div class="feat"><span class="fg"><span data-t>Fresh wallets</span><i aria-hidden="true"></i><span data-t>Private routes</span></span><i class="fm" aria-hidden="true"></i><span class="fg"><span data-t>Stocks</span><i aria-hidden="true"></i><span data-t>Perps</span><i aria-hidden="true"></i><span data-t>Trenches</span></span></div>
     <div class="cta">
-      <a class="btn pri" href="/app#safe"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 9.5C2 7.6 3.6 6.5 5.4 7l3.1.9c1 .3 2.1.4 3.5.4s2.5-.1 3.5-.4l3.1-.9c1.8-.5 3.4.6 3.4 2.5 0 4-2.6 7-5.6 7-1.7 0-2.7-1-3.2-2.2-.2-.5-.7-.8-1.2-.8s-1 .3-1.2.8C10.3 15.5 9.3 16.5 7.6 16.5 4.6 16.5 2 13.5 2 9.5Z"/></svg><span class="bl">Go anon</span> <span class="a">→</span></a>
+      <a class="btn pri" href="/app#safe"><span class="bl">Go anon</span> <span class="a">→</span></a>
       <a class="btn sec" href="/app#overview"><span class="bl">Enter the terminal</span></a>
     </div>
     <div class="links" id="caSlot"></div>
@@ -237,8 +225,7 @@ html,body{height:100%}
   if (fine && !still) addEventListener('pointermove', e => { if (city && city.setPointer) city.setPointer(e.clientX / innerWidth * 2 - 1, e.clientY / innerHeight * 2 - 1); }, { passive: true });
   if (fine && !still) $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.translate = `${((e.clientX - r.left) / r.width - 0.5) * 10}px ${((e.clientY - r.top) / r.height - 0.5) * 8}px`; }); b.addEventListener('pointerleave', () => { b.style.translate = '0 0'; }); });
 
-  // ---------------------------------------------------------------- the camera: clock, rain, trackers that lose you, the shutter
-  { const c = $('#hudClk'), f = () => { c.textContent = new Date().toISOString().slice(11, 19) + ' UTC'; }; f(); setInterval(f, 1000); }
+  // ---------------------------------------------------------------- the camera: rain, trackers that lose you, the shutter
 
   // rain: streaks with a wind, nearer ones longer and brighter; splashes where they meet the water
   function rain() {
