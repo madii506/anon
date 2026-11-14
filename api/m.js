@@ -540,6 +540,8 @@ function b58enc(buf) { const d = []; let s = ''; for (const byte of buf) { let c
 // a throwaway Solana address, only for price-check quotes that never get a deposit
 function throwaway() { const { publicKey } = require('crypto').generateKeyPairSync('ed25519'); return b58enc(Buffer.from(publicKey.export({ format: 'jwk' }).x, 'base64url')); }
 const addrOk = (asset, a) => RASSET[asset].chain === 'zec' ? ZEC_ADDR.test(a) : B58.test(a);
+// a throwaway transparent Zcash address (t1…), only for price-check quotes that never get a deposit
+function throwawayZec() { const c = require('crypto'); const body = Buffer.concat([Buffer.from([0x1c, 0xb8]), c.randomBytes(20)]); const sum = c.createHash('sha256').update(c.createHash('sha256').update(body).digest()).digest().subarray(0, 4); return b58enc(Buffer.concat([body, sum])); }
 async function oneclick(path, init) {
   try { return await getJ(ONECLICK + path, Object.assign({ headers: { accept: 'application/json', 'content-type': 'application/json' } }, init || {}), 20000); }
   catch (e) { const m = (e.body && (e.body.message || e.body.error)) || e.message; fail('route: ' + String(m).slice(0, 160)); }
@@ -549,8 +551,8 @@ async function route(b) {
   if (!RASSET[from] || !RASSET[to]) fail('that route is not supported');
   const dry = !!b.dry;
   let recipient = String(b.recipient || ''), refundTo = String(b.refundTo || '');
-  if (dry && !recipient) recipient = RASSET[to].chain === 'sol' ? throwaway() : '';
-  if (dry && !refundTo) refundTo = RASSET[from].chain === 'sol' ? throwaway() : '';
+  if (dry && !recipient) recipient = RASSET[to].chain === 'sol' ? throwaway() : throwawayZec();
+  if (dry && !refundTo) refundTo = RASSET[from].chain === 'sol' ? throwaway() : throwawayZec();
   if (!addrOk(to, recipient)) fail(to === 'ZEC' ? 'enter a Zcash address to receive the ZEC' : 'enter the Solana address that receives it');
   if (!addrOk(from, refundTo)) fail(from === 'ZEC' ? 'enter a Zcash address for refunds' : 'enter a Solana address for refunds');
   const amount = toChain(b.amount, RASSET[from].dec);
