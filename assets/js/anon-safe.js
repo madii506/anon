@@ -178,11 +178,11 @@
       const r = await api('trace', { addr: a }), h1 = r.hop1, f1 = h1 && h1.first, f2 = r.hop2 && r.hop2.first;
       const node = (k, cls, ad, sub) => `<div class="tz-n ${cls}"><i>${k}</i><div><button class="ad" data-copy="${esc(ad)}">${esc(ad)}</button><span>${sub}</span></div><a href="https://solscan.io/account/${esc(ad)}" target="_blank" rel="noopener">↗</a></div>`;
       let h = node('YOU', '', a, (r.sol != null ? r.sol.toFixed(3) + ' SOL now · ' : '') + (h1.txs ? (h1.more ? h1.txs.toLocaleString() + '+' : h1.txs.toLocaleString()) + ' transactions' : 'no history'));
-      if (f1 && f1.funder) {
-        h += `<div class="tz-l2">funded by · ${f1.sol != null ? f1.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f1.time))}</div>` + node('1', 'f', f1.funder, 'its first SOL came from here');
-        if (f2 && f2.funder) h += `<div class="tz-l2">funded by · ${f2.sol != null ? f2.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f2.time))}</div>` + node('2', 'f2', f2.funder, 'two hops back');
+      if (f1 && f1.funder && !h1.more) {
+        h += `<div class="tz-l2">funded by · ${f1.sol ? f1.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f1.time))}</div>` + node('1', 'f', f1.funder, 'its first SOL came from here');
+        if (f2 && f2.funder) h += `<div class="tz-l2">funded by · ${f2.sol ? f2.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f2.time))}</div>` + node('2', 'f2', f2.funder, 'two hops back');
         h += `<div class="tz-v">Linked to <b>${esc(short(f1.funder))}</b>${f2 && f2.funder ? ' and through it to <b>' + esc(short(f2.funder)) + '</b>' : ''}. Anyone can follow that line. A fresh wallet funded through a route starts its trail at a solver instead.</div>`;
-      } else if (h1.more) h += `<div class="tz-v">${h1.txs.toLocaleString()}+ transactions: older than this quick trace pages back. Explorers and analytics tools still reach it.</div>`;
+      } else if (h1.more) h += `<div class="tz-v">${h1.txs.toLocaleString()}+ transactions: its first funding is older than this quick trace pages back. Explorers and analytics tools still reach it, and everything it has done since is public too.</div>`;
       else h += '<div class="tz-v ok">No funding trail found: this wallet has no history yet, or its first SOL came in a way this trace does not read.</div>';
       out.innerHTML = h;
     } catch (e) { out.innerHTML = `<div class="tz-e">Could not read Solana right now (${esc(e.message)}). Try again in a moment.</div>`; }
