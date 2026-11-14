@@ -437,7 +437,7 @@ async function perpExec(b) {
 
 // ---------------------------------------------------------------- city photos: one real photo per item, made once by FLUX through
 // Vercel's AI Gateway, kept in Postgres and served from the CDN for a year. The line icon stays as the fallback.
-const LOOK = ' Photorealistic professional photograph, 35mm lens, dusk with soft pastel pink, peach and lavender light, warm glowing lamps, calm and clean, rich detail, the subject centred with space around it. No people. No text, no letters, no words on signs, no logos, no brand badges, no watermark.';
+const LOOK = ' Photorealistic professional photograph, 35mm lens, the city at night, deep navy and violet shadows, teal and magenta neon glow, wet street reflections, one searchlight beam in the sky, calm and clean, rich detail, the subject centred with space around it. No people. No text, no letters, no words on signs, no logos, no brand badges, no watermark.';
 let OIDC = null;
 const gwToken = () => process.env.AI_GATEWAY_API_KEY || OIDC || process.env.VERCEL_OIDC_TOKEN || null;
 let imgReady = null;
@@ -455,13 +455,14 @@ async function flux(prompt) {
   return Buffer.from(d.b64_json, 'base64');
 }
 async function fit(buf, w, qual) { try { const sharp = require('sharp'); return await sharp(buf).resize(w, w, { fit: 'cover' }).jpeg({ quality: qual, mozjpeg: true }).toBuffer(); } catch { return buf; } }
-function photoUrl(c) { return `/api/m?a=cimg&id=${c.id}&v=${c.v || 1}`; }
+const PV = c => 'n' + (c.v || 1);  // night photo version
+function photoUrl(c) { return `/api/m?a=cimg&id=${c.id}&v=${PV(c)}`; }
 async function cityPhoto(q, res) {
   const c = CITY_BY_ID[String(q.get('id') || '')]; if (!c || !c.shot) fail('unknown item');
-  const s = q.get('s') === 't' ? 't' : 'm', v = String(c.v || 1);
+  const s = q.get('s') === 't' ? 't' : 'm', v = PV(c);
   if (q.get('v') !== v) { res.statusCode = 302; res.setHeader('location', photoUrl(c) + '&s=' + s); res.setHeader('cache-control', 'public, s-maxage=300'); return res.end(); }
   const D = await imgDb(); if (!D) fail('the photo store is not connected');
-  const key = x => `city:${c.id}:${v}:${x}`;
+  const key = x => `anon:city:${c.id}:${v}:${x}`;
   const send = (b64, mime) => { const buf = Buffer.from(b64, 'base64'); res.statusCode = 200; res.setHeader('content-type', mime || 'image/jpeg'); res.setHeader('cache-control', 'public, max-age=604800, s-maxage=31536000, immutable'); return res.end(buf); };
   const [have] = await D`select mime, b64 from mk_img where k = ${key(s)}`;
   if (have) return send(have.b64, have.mime);
@@ -614,6 +615,13 @@ async function trace(addr) {
   return { addr, sol: lam != null ? lam / 1e9 : null, hop1, hop2, t: Date.now() };
 }
 
+// a wallet's latest transactions (the safehouse shows them per fresh wallet)
+async function acts(addr) {
+  addr = String(addr || '').trim(); if (!B58.test(addr)) fail('bad wallet address');
+  const r = await rpc('getSignaturesForAddress', [addr, { limit: 10, commitment: 'confirmed' }]);
+  return { addr, acts: (r || []).map(x => ({ sig: x.signature, time: x.blockTime || null, err: !!x.err })), t: Date.now() };
+}
+
 // one-day sparklines for a handful of stocks at once (homepage cards)
 async function sparks(list) {
   const syms = String(list || '').split(',').filter(x => BY_SYM[x]).slice(0, 16);
@@ -654,6 +662,7 @@ module.exports = async (req, res) => {
     if (a === 'rsubmit' && req.method === 'POST') return out(res, 200, await routeSubmit(await body(req)));
     if (a === 'bh') return out(res, 200, await latestHash());
     if (a === 'trace') return out(res, 200, await trace(q.get('addr')), 'public, s-maxage=60, stale-while-revalidate=300');
+    if (a === 'acts') return out(res, 200, await acts(q.get('addr')));
     return out(res, 404, { error: 'unknown action' });
   } catch (e) {
     return out(res, e.user ? 400 : 502, { error: String((e && e.message) || e).slice(0, 220) });
