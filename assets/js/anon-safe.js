@@ -36,10 +36,13 @@
   // under every trade button: which wallet will sign it
   function signers() {
     const W = WAL.W;
+    let cs = document.getElementById('cmdId');
+    if (!cs && document.querySelector('.cmd #solp')) { cs = document.createElement('span'); cs.id = 'cmdId'; document.querySelector('.cmd #solp').before(cs); }
+    if (cs) { cs.className = 'cid ' + (W.fresh ? 'anon' : W.addr ? 'main' : ''); cs.innerHTML = W.fresh ? `● anon on · ${esc(W.name)}` : W.addr ? '● exposed · main wallet' : '○ no wallet'; cs.onclick = () => { location.hash = '#safe'; }; }
     document.querySelectorAll('[data-signer]').forEach(el => {
       if (!W.addr) { el.className = 'signer'; el.innerHTML = ''; return; }
-      if (W.fresh) { el.className = 'signer anon'; el.innerHTML = `${MASK}<span>signs as <b>${esc(W.name)}</b> · a fresh wallet, not linked to you</span>`; }
-      else { el.className = 'signer main'; el.innerHTML = `${EYE}<span>signs as your <b>main wallet</b> · public and tied to you · <a href="#safe">go anon</a></span>`; }
+      if (W.fresh) { el.className = 'signer anon'; el.innerHTML = `${MASK}<span>signs as <b>${esc(W.name)}</b> · not linked to you</span>`; }
+      else { el.className = 'signer main'; el.innerHTML = `${EYE}<span>signs as your <b>main wallet</b> · public · <a href="#safe">go anon</a></span>`; }
     });
   }
   function menu() {
@@ -83,10 +86,14 @@
   function routeRow(r) {
     const st = STEP(r.status), bad = ['REFUNDED', 'FAILED', 'INCOMPLETE_DEPOSIT', 'NOT_SENT'].includes(r.status);
     const lbl = { PENDING_DEPOSIT: 'waiting for the deposit', KNOWN_DEPOSIT_TX: 'deposit seen', PROCESSING: 'routing', SUCCESS: 'arrived', REFUNDED: 'refunded', FAILED: 'failed', INCOMPLETE_DEPOSIT: 'deposit too small', NOT_SENT: 'deposit not sent' }[r.status] || 'starting';
-    return `<div class="rt ${bad ? 'bad' : st === 3 ? 'ok' : ''}"><div class="rt-h"><b>${esc(r.kind)}</b><span>${esc(r.amt)} ${esc(r.from)} → ${esc(r.to)}${r.out ? ' · got ' + esc(r.out) : ''}</span><em>${lbl}</em></div>
+    const live = !DONE.includes(r.status), el = Math.max(0, Math.round((Date.now() - r.t) / 1000)), clk = live ? ` · <span class="clk2">${Math.floor(el / 60)}:${String(el % 60).padStart(2, '0')}</span>` : '';
+    return `<div class="rt ${bad ? 'bad' : st === 3 ? 'ok' : ''}"><div class="rt-h"><b>${esc(r.kind)}</b><span>${esc(r.amt)} ${esc(r.from)} → ${esc(r.to)}${r.out ? (st === 3 && !bad ? ' · got ' : ' · ≈ ') + esc(r.out) : ''}</span><em>${lbl}${clk}</em></div>
       <div class="rt-s"><i class="${st >= 1 ? 'y' : ''}"></i><span>deposit sent${r.sig ? ` <a href="https://solscan.io/tx/${esc(r.sig)}" target="_blank" rel="noopener">tx ↗</a>` : ''}</span><i class="${st >= 2 ? 'y' : ''}"></i><span>routing</span><i class="${st >= 3 ? (bad ? 'x' : 'y') : ''}"></i><span>${bad ? lbl : 'arrived'}${r.dest && r.dest[0] && r.to !== 'ZEC' ? ` <a href="https://solscan.io/tx/${esc(r.dest[0])}" target="_blank" rel="noopener">tx ↗</a>` : ''}</span></div></div>`;
   }
-  function paintRoutes() { const el = $('#sfRoutes'); if (!el) return; el.innerHTML = RT.length ? RT.slice().reverse().map(routeRow).join('') : '<div class="empty">No routes yet. Fund a fresh wallet and it shows up here, step by step.</div>'; }
+  setInterval(() => { if (!document.hidden && RT.some(r => !DONE.includes(r.status)) && $('#sfRoutes')) paintRoutes(); }, 1000);
+  function paintRoutes() { const el = $('#sfRoutes'); if (!el) return; el.innerHTML = RT.length ? RT.slice().reverse().map(routeRow).join('') : ghostRoute(); }
+  // before the first route: the row it will become, empty, so the steps are known before any money moves
+  function ghostRoute() { const f = WAL.W.fresh || WAL.fresh()[0]; return `<div class="rt ghost"><div class="rt-h"><b>fast hop</b><span>main → ${f ? esc(f.label) : 'a fresh wallet'}</span><em>no routes yet</em></div><div class="rt-s"><i></i><span>deposit sent</span><i></i><span>routing</span><i></i><span>arrived</span></div></div><div class="empty">Fund a fresh wallet or cash one out and the route shows up here, step by step.</div>`; }
 
   // ---------------------------------------------------------------- the safehouse page
   const UI = { tab: 'hop', to: null, from: null, outTo: 'main', amt: '', oamt: '', zaddr: store.get('anon.zaddr') || '', q: null, oq: null, busy: false, obusy: false };
@@ -124,14 +131,14 @@
         <div class="sf-sec"><span class="eb">03</span><b>your wallets</b><button class="kb hot" id="sfNew">+ new fresh wallet</button></div>
         <div id="sfMain"></div>
         <div class="sf-list" id="sfList"></div>
+        <div class="sf-sec"><span class="eb">04</span><b>routes</b><span class="mute">live from NEAR Intents</span></div>
+        <div class="sf-routes" id="sfRoutes"></div>
       </div>
       <div class="sf-col">
-        <div class="sf-sec"><span class="eb">04</span><b>fund privately</b><span class="seg" id="sfTab"><button data-t="hop" class="on">fast hop</button><button data-t="zec">shielded</button></span></div>
+        <div class="sf-sec"><span class="eb">05</span><b>fund privately</b><span class="seg" id="sfTab"><button data-t="hop" class="on">fast hop</button><button data-t="zec">shielded</button></span></div>
         <div class="pn sf-fund" id="sfFund"></div>
-        <div class="sf-sec"><span class="eb">05</span><b>cash out</b></div>
+        <div class="sf-sec"><span class="eb">06</span><b>cash out</b></div>
         <div class="pn sf-out" id="sfOut"></div>
-        <div class="sf-sec"><span class="eb">06</span><b>routes</b><span class="mute">live from NEAR Intents</span></div>
-        <div class="sf-routes" id="sfRoutes"></div>
       </div>
     </div>
     <div class="sf-sec sf-wide"><span class="eb">07</span><b>the rules</b></div>
@@ -198,14 +205,41 @@
     $('#sfList').innerHTML = F.length ? F.map(f => `<div class="wc fresh ${act === f.id ? 'on' : ''}" data-id="${f.id}">
       <div class="wc-t">${MASK}<b>${esc(f.label)}</b><em class="tag fr">fresh</em>${act === f.id ? '<em class="tag onl">on</em>' : ''}<span class="born">made ${new Date(f.born).toLocaleDateString()}</span></div>
       <div class="wc-a"><button class="ad" data-copy="${esc(f.pub)}">${short(f.pub)}</button><span class="bal" data-bal="${esc(f.pub)}">… SOL</span></div>
-      <div class="wc-b">${act === f.id ? '<button class="kb dim" data-use="main">switch off</button>' : `<button class="kb hot" data-use="${f.id}">switch on</button>`}<button class="kb" data-fund="${f.id}">fund</button><button class="kb" data-out="${f.id}">cash out</button><button class="kb" data-exp="${f.id}">export key</button><button class="kb warn" data-burn="${f.id}">burn</button></div></div>`).join('')
+      <div class="wc-p" data-priv="${esc(f.pub)}"><i></i><span>checking its trail on Solana…</span></div>
+      <div class="wc-b">${act === f.id ? '<button class="kb dim" data-use="main">switch off</button>' : `<button class="kb hot" data-use="${f.id}">switch on</button>`}<button class="kb" data-fund="${f.id}">fund</button><button class="kb" data-out="${f.id}">cash out</button><button class="kb" data-acts="${esc(f.pub)}">activity</button><button class="kb" data-exp="${f.id}">export key</button><button class="kb warn" data-burn="${f.id}">burn</button></div>
+      <div class="wc-acts" data-actsbox="${esc(f.pub)}" hidden></div></div>`).join('')
       : `<div class="wc empty-w"><b>No fresh wallets yet.</b><p>Make one: a new Solana keypair, generated right here in your browser. Its key never leaves this browser.</p><button class="kb hot" data-new>${MASK} make a fresh wallet</button></div>`;
   }
   async function paintWallets() {
     if (!$('#sfMain')) return; walletsHTML();
     const addrs = [WAL.MAIN.addr, ...WAL.fresh().map(f => f.pub)].filter(Boolean);
-    await Promise.all(addrs.map(async a => { const b = await balOf(a); document.querySelectorAll(`[data-bal="${a}"]`).forEach(n => { n.textContent = b && b.sol != null ? sol(b.sol) + ' SOL' : '— SOL'; }); }));
+    await Promise.all(addrs.map(async a => { const b = await balOf(a); document.querySelectorAll(`[data-bal="${a}"]`).forEach(n => { const tk = b && b.tokens ? b.tokens.length : 0; n.innerHTML = b && b.sol != null ? `${sol(b.sol)} SOL${tk ? `<small>+${tk} token${tk > 1 ? 's' : ''}${b.total ? ' · $' + b.total.toFixed(2) : ''}</small>` : ''}` : '— SOL'; }); }));
+    WAL.fresh().forEach(f => privacy(f.pub));
   }
+  // is this fresh wallet linked to your main? read its first funder from Solana
+  const PRIV = {};
+  async function privacy(pub, force) {
+    const el = () => document.querySelector(`[data-priv="${pub}"]`);
+    let r = PRIV[pub];
+    if (force || !r || Date.now() - r.t > 60000) { try { r = PRIV[pub] = { t: Date.now(), v: await api('trace', { addr: pub }) }; } catch { r = null; } }
+    const box = el(); if (!box) return;
+    if (!r) { box.className = 'wc-p'; box.innerHTML = '<i></i><span>could not read its trail right now</span>'; return; }
+    const h = r.v.hop1, f = h && h.first, M = WAL.MAIN.addr;
+    if (!h || !h.txs) { box.className = 'wc-p idle'; box.innerHTML = '<i></i><span>never used: no transactions on-chain yet</span>'; return; }
+    if (f && f.funder && M && f.funder === M) { box.className = 'wc-p bad'; box.innerHTML = `<i></i><span><b>linked</b> · its first SOL came straight from your main wallet</span>`; return; }
+    if (f && f.funder) { box.className = 'wc-p good'; box.innerHTML = `<i></i><span><b>${M ? 'unlinked' : 'trail'}</b> · first SOL from <button class="ad" data-copy="${esc(f.funder)}">${short(f.funder)}</button>${M ? ', not your main' : ''} · ${h.txs} tx${h.txs > 1 ? 's' : ''}</span>`; return; }
+    box.className = 'wc-p'; box.innerHTML = `<i></i><span>${h.txs} transactions · first funder not readable</span>`;
+  }
+  async function activity(pub) {
+    const box = document.querySelector(`[data-actsbox="${pub}"]`); if (!box) return;
+    if (!box.hidden) { box.hidden = true; return; }
+    box.hidden = false; box.innerHTML = '<span class="mute">reading Solana…</span>';
+    try {
+      const r = await api('acts', { addr: pub });
+      box.innerHTML = r.acts.length ? r.acts.map(a => `<a href="https://solscan.io/tx/${esc(a.sig)}" target="_blank" rel="noopener"><span class="${a.err ? 'dn' : 'up'}">${a.err ? 'failed' : 'ok'}</span><code>${esc(a.sig.slice(0, 10))}…</code><em>${a.time ? ago(a.time) : ''}</em></a>`).join('') : '<span class="mute">no transactions yet</span>';
+    } catch (e) { box.innerHTML = `<span class="mute">could not read it (${esc(e.message)})</span>`; }
+  }
+  const ago = t => { const d = Math.max(0, Date.now() / 1000 - t); return d < 60 ? Math.round(d) + 's ago' : d < 3600 ? Math.round(d / 60) + 'm ago' : d < 86400 ? Math.round(d / 3600) + 'h ago' : Math.round(d / 86400) + 'd ago'; };
   function freshOpts(sel) { return WAL.fresh().map(f => `<option value="${f.id}" ${sel === f.id ? 'selected' : ''}>${esc(f.label)} · ${short(f.pub)}</option>`).join(''); }
   function paintFund() {
     const el = $('#sfFund'); if (!el) return;
@@ -219,7 +253,7 @@
       <div class="fr2"><label for="sfTo">to</label><select id="sfTo">${freshOpts(UI.to)}</select></div>
       <div class="fr2"><label for="sfAmt">amount</label><div class="amt"><input id="sfAmt" inputmode="decimal" placeholder="0.00" value="${esc(UI.amt)}"><span>SOL</span></div><span class="qk"><button data-qa="0.1">0.1</button><button data-qa="0.5">0.5</button><button data-qa="1">1</button></span></div>
       <div class="qt" id="sfQ">${q ? q.error ? `<span class="dn">${esc(q.error)}</span>` : `<span>they receive <b>≈ ${esc(q.amountOutFormatted)} SOL</b></span><span>fee ≈ ${fee(q)}</span><span>~${q.timeEstimate || 20}s</span>` : UI.amt ? '<span class="mute">getting a live quote…</span>' : '<span class="mute">enter an amount for a live quote</span>'}</div>
-      <button class="go2" id="sfGo" ${UI.busy ? 'disabled' : ''}>${UI.busy ? 'routing…' : M.addr ? 'fund privately' : 'connect main wallet to fund'}</button>
+      <button class="sgo" id="sfGo" ${UI.busy ? 'disabled' : ''}>${UI.busy ? 'routing…' : M.addr ? 'fund privately' : 'connect main wallet to fund'}</button>
       <div class="tip">Round amounts help: 1 SOL in, 0.999 out is easy to match. Waiting a while before you trade helps more.</div>`
     : `
       <div class="lead2">Two legs through your own Zcash wallet. SOL goes to your shielded ZEC address, then ZEC comes back out as SOL to the fresh wallet. Slower, and the strongest break.</div>
@@ -227,7 +261,7 @@
       <div class="fr2"><label for="sfTo">to</label><select id="sfTo">${freshOpts(UI.to)}</select></div>
       <div class="fr2"><label for="sfAmt">leg 1 amount</label><div class="amt"><input id="sfAmt" inputmode="decimal" placeholder="0.00" value="${esc(UI.amt)}"><span>SOL</span></div><span class="qk"><button data-qa="0.5">0.5</button><button data-qa="1">1</button><button data-qa="2">2</button></span></div>
       <div class="qt" id="sfQ">${q ? q.error ? `<span class="dn">${esc(q.error)}</span>` : `<span>your Zcash wallet receives <b>≈ ${esc(q.amountOutFormatted)} ZEC</b></span><span>~${q.timeEstimate || 60}s</span>` : '<span class="mute">enter your ZEC address and an amount</span>'}</div>
-      <div class="legs"><button class="go2" id="sfL1" ${UI.busy ? 'disabled' : ''}>leg 1 · send SOL to my Zcash wallet</button><button class="go2 alt" id="sfL2">leg 2 · get a ZEC deposit address for the fresh wallet</button></div>
+      <div class="legs"><button class="sgo" id="sfL1" ${UI.busy ? 'disabled' : ''}>leg 1 · send SOL to my Zcash wallet</button><button class="sgo alt" id="sfL2">leg 2 · get a ZEC deposit address for the fresh wallet</button></div>
       <div id="sfL2o"></div>`;
   }
   const fee = q => { const i = parseFloat(q.amountInFormatted), o = parseFloat(q.amountOutFormatted); return i > 0 && o >= 0 ? ((i - o) / i * 100).toFixed(2) + '%' : '—'; };
@@ -242,7 +276,7 @@
       <div class="fr2"><label for="sfOT">to</label><div class="fv col"><select id="sfOT"><option value="main" ${UI.outTo === 'main' ? 'selected' : ''}>my main wallet${M.addr ? ' · ' + short(M.addr) : ' (connect it first)'}</option><option value="other" ${UI.outTo !== 'main' ? 'selected' : ''}>another address</option></select>${UI.outTo !== 'main' ? `<input id="sfOA" class="txt" placeholder="Solana address" value="${esc(UI.outTo === 'other' ? '' : UI.outTo)}" spellcheck="false">` : ''}</div></div>
       <div class="fr2"><label for="sfOAmt">amount</label><div class="amt"><input id="sfOAmt" inputmode="decimal" placeholder="0.00" value="${esc(UI.oamt)}"><span>SOL</span></div><span class="qk"><button data-oq="max">max</button></span></div>
       <div class="qt" id="sfOQ">${q ? q.error ? `<span class="dn">${esc(q.error)}</span>` : `<span>arrives <b>≈ ${esc(q.amountOutFormatted)} SOL</b></span><span>fee ≈ ${fee(q)}</span><span>~${q.timeEstimate || 20}s</span>` : '<span class="mute">routed through NEAR Intents, so the receiving wallet is not linked to this one</span>'}</div>
-      <button class="go2" id="sfOGo" ${UI.obusy ? 'disabled' : ''}>${UI.obusy ? 'routing…' : 'cash out privately'}</button>`;
+      <button class="sgo" id="sfOGo" ${UI.obusy ? 'disabled' : ''}>${UI.obusy ? 'routing…' : 'cash out privately'}</button>`;
   }
   let qT = 0, oqT = 0, qid = 0, oqid = 0;
   function quoteSoon() { clearTimeout(qT); UI.q = null; const a = parseFloat(UI.amt); if (!(a > 0)) { paintQ(); return; } if (UI.tab === 'zec' && UI.zaddr.length < 30) { paintQ(); return; } paintQ(); qT = setTimeout(doQuote, 500); }
@@ -279,6 +313,7 @@
   async function onClick(e) {
     const t = e.target;
     const cp = t.closest('[data-copy]'); if (cp) return copy(cp.dataset.copy);
+    const ac = t.closest('[data-acts]'); if (ac) return activity(ac.dataset.acts);
     const u = t.closest('[data-use]'); if (u) { if (u.dataset.use === 'main' && !WAL.MAIN.addr) return openConnect(); WAL.use(u.dataset.use); toast(u.dataset.use === 'main' ? 'trading from your main wallet' : 'trading from ' + WAL.W.name); return; }
     if (t.closest('[data-new]')) return newFresh(!WAL.W.fresh);
     const fd = t.closest('[data-fund]'); if (fd) { UI.to = fd.dataset.fund; paintFund(); $('#sfAmt') && $('#sfAmt').focus(); return; }
@@ -328,7 +363,7 @@
       UI.obusy = false; paintOut(); return;
     }
   }
-  function prompt2() { const v = ($('#sfZamt') && $('#sfZamt').value) || ''; if (v) return v; const box = $('#sfL2o'); box.innerHTML = `<div class="dep"><span>How much ZEC will you send from your Zcash wallet?</span><div class="amt"><input id="sfZamt" inputmode="decimal" placeholder="0.00"><span>ZEC</span></div><button class="go2 alt" data-l2go>get the deposit address</button></div>`; $('#sfZamt').focus(); return null; }
+  function prompt2() { const v = ($('#sfZamt') && $('#sfZamt').value) || ''; if (v) return v; const box = $('#sfL2o'); box.innerHTML = `<div class="dep"><span>How much ZEC will you send from your Zcash wallet?</span><div class="amt"><input id="sfZamt" inputmode="decimal" placeholder="0.00"><span>ZEC</span></div><button class="sgo alt" data-l2go>get the deposit address</button></div>`; $('#sfZamt').focus(); return null; }
   function onInput(e) {
     const t = e.target;
     if (t.id === 'sfAmt') { UI.amt = t.value.replace(/[^\d.]/g, ''); quoteSoon(); }
@@ -358,6 +393,12 @@
   }
 
   WAL.on(() => { chip(); if ($('#safe') && $('#safe').dataset.built) { paintWallets(); paintFund(); paintOut(); } });
-  window.ANONSAFE = { render, chip, newFresh, goAnon };
+  function traceFor(a) { render(); const q = $('#tzQ'); if (!q) return; q.value = a; trace(); }
+  function prefill(kind, a) {
+    render();
+    if (kind === 'fund') { if (a && a !== 'max') { UI.amt = a; const i = $('#sfAmt'); if (i) i.value = a; quoteSoon(); } const i = $('#sfAmt'); if (i) { i.scrollIntoView({ block: 'center', behavior: 'smooth' }); i.focus(); } }
+    else { const i = $('#sfOAmt'); if (a === 'max') { const b = document.querySelector('[data-oq="max"]'); if (b) b.click(); } else if (a) { UI.oamt = a; if (i) i.value = a; oquoteSoon(); } const j = $('#sfOAmt'); if (j) { j.scrollIntoView({ block: 'center', behavior: 'smooth' }); j.focus(); } }
+  }
+  window.ANONSAFE = { render, chip, newFresh, goAnon, trace: traceFor, prefill };
   chip();
 })();

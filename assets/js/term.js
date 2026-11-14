@@ -136,9 +136,10 @@
   // ---------------------------------------------------------------- heatmap
   function heatColor(s) {
     if (s.thin || s.ch24 == null) return ['#16133a', 'var(--dim)'];
-    const a = Math.pow(Math.min(1, Math.abs(s.ch24) / 4), 0.8), to = s.ch24 >= 0 ? [23, 138, 88] : [201, 55, 90];
-    const c = [246, 241, 231].map((b, i) => Math.round(b + (to[i] - b) * a));
-    return [`rgb(${c.join(',')})`, a > 0.55 ? '#ffffff' : (s.ch24 >= 0 ? '#11663f' : '#9c2443')];
+    // night tiles: deep indigo at flat, toward neon green / red as the move grows
+    const a = Math.pow(Math.min(1, Math.abs(s.ch24) / 4), 0.8), to = s.ch24 >= 0 ? [18, 150, 104] : [196, 40, 86];
+    const c = [24, 21, 62].map((b, i) => Math.round(b + (to[i] - b) * a));
+    return [`rgb(${c.join(',')})`, a > 0.5 ? '#ffffff' : (s.ch24 >= 0 ? '#5ff0b6' : '#ff8aa0')];
   }
   const lastHeat = {}; let heatSeen = false;
   function renderHeat() {
@@ -415,7 +416,7 @@
     const T = totals(), B = S.bal;
     const seg = (v, c) => T.tot > 0 && v > 0 ? `<i style="width:${(v / T.tot * 100).toFixed(2)}%;background:${c}"></i>` : '';
     a.innerHTML = `<div><div class="lbl">NET WORTH</div><div class="nw">${usd(T.tot)}</div><div class="${cls(T.day)}" style="font-size:11.5px">${T.day >= 0 ? '+' : '−'}${usd(Math.abs(T.day))} today</div></div>
-      <div class="bar2">${seg(T.vS, '#d92f6b')}${seg(T.vP, '#2ee69a')}${seg(T.vC, '#f3b8c8')}${seg(T.vO, '#f2c46b')}</div>
+      <div class="bar2">${seg(T.vS, '#7b5cff')}${seg(T.vP, '#2ee69a')}${seg(T.vC, '#2ee6d6')}${seg(T.vO, '#ff3fd2')}</div>
       ${T.pp.length ? `<div class="ln" data-perps="1">${lg('PERP', null, 'm')}<div><b>PERPS</b><small>${T.pp.length} open</small></div><div class="r">${usd(T.vP)}<small class="${cls(T.pp.reduce((a, p) => a + (p.pnl || 0), 0))}">${(t => (t >= 0 ? '+' : '−') + usd(Math.abs(t)))(T.pp.reduce((a, p) => a + (p.pnl || 0), 0))} pnl</small></div></div>` : ''}
       <div>${[['SOL', B.solIcon, amt(B.sol, 4), B.solValue, B.solCh24]].concat(T.cash.map(t => ['USDC', t.icon, amt(t.amount, 2), t.value, null])).concat(T.st.map(t => [t.sym, t.icon, amt(t.amount), t.value, t.ch24])).map(([sy, ic, am, v, ch]) => `<div class="ln" data-sym="${esc(sy)}">${lg(sy, ic, 'm')}<div><b>${esc(sy)}</b><small>${am}</small></div><div class="r">${usd(v)}<small class="${cls(ch)}">${ch == null ? '' : pc(ch)}</small></div></div>`).join('')}</div>
       ${T.st.length ? '' : '<div class="mute" style="font-size:11.5px">No stocks yet. The city is waiting.</div>'}`;
@@ -449,7 +450,7 @@
     const row = t => `<div class="tr" data-sym="${esc(t.sym)}" style="grid-template-columns:minmax(150px,1.2fr) minmax(150px,1.6fr) 120px 110px 110px 92px 70px"><span>${lg(t.sym, t.icon)} <b>${esc(t.sym)}</b></span><span class="nmc">${esc(t.name)}</span><span class="r">${amt(t.amount)}</span><span class="r">${usd(t.price)}</span><span class="r"><b>${usd(t.value)}</b></span><span class="r ${cls(t.ch24)}">${pc(t.ch24)}</span><span class="go2">${S.by[t.sym] ? 'Trade →' : ''}</span></div>`;
     const head = `<div class="tr th" style="grid-template-columns:minmax(150px,1.2fr) minmax(150px,1.6fr) 120px 110px 110px 92px 70px"><span>SYMBOL</span><span>NAME</span><span class="r">AMOUNT</span><span class="r">PRICE</span><span class="r">VALUE</span><span class="r">24H</span><span></span></div>`;
     pf.innerHTML = `<h1>Portfolio</h1><div class="lead"><a class="sub" href="https://solscan.io/account/${esc(B.wallet)}" target="_blank" rel="noopener">${short(B.wallet)} ↗</a> · <button class="sub" id="pfr" style="text-decoration:underline">refresh</button> · <button class="sub" id="pfs" style="text-decoration:underline;font-weight:750">share my bag</button></div>
-      <div class="pf-top"><div class="pn"><div class="lbl">NET WORTH</div><div class="big">${usd(T.tot)}</div><div class="${cls(T.day)}">${T.day >= 0 ? '+' : '−'}${usd(Math.abs(T.day))} today</div><div class="bar2" style="margin-top:12px">${seg(T.vS, '#d92f6b')}${seg(T.vP, '#2ee69a')}${seg(T.vC, '#f3b8c8')}${seg(T.vO, '#f2c46b')}</div><div class="legend"><span><i style="background:#d92f6b"></i>stocks &amp; city ${usd(T.vS)}</span><span><i style="background:#1f9e66"></i>perps ${usd(T.vP)}</span><span><i style="background:#f3b8c8"></i>cash ${usd(T.vC)}</span><span><i style="background:#f2c46b"></i>other ${usd(T.vO)}</span></div></div>
+      <div class="pf-top"><div class="pn"><div class="lbl">NET WORTH</div><div class="big">${usd(T.tot)}</div><div class="${cls(T.day)}">${T.day >= 0 ? '+' : '−'}${usd(Math.abs(T.day))} today</div><div class="bar2" style="margin-top:12px">${seg(T.vS, '#7b5cff')}${seg(T.vP, '#2ee69a')}${seg(T.vC, '#2ee6d6')}${seg(T.vO, '#ff3fd2')}</div><div class="legend"><span><i style="background:#7b5cff"></i>stocks &amp; city ${usd(T.vS)}</span><span><i style="background:#2ee69a"></i>perps ${usd(T.vP)}</span><span><i style="background:#2ee6d6"></i>cash ${usd(T.vC)}</span><span><i style="background:#ff3fd2"></i>other ${usd(T.vO)}</span></div></div>
       <div class="pn"><div class="lbl">CASH</div><div style="display:grid;gap:8px;margin-top:10px"><div>${lg('SOL', B.solIcon, 'm')} <b>${amt(B.sol, 4)} SOL</b> <span class="mute">${usd(B.solValue)}</span></div>${(T.cash.length ? T.cash : [{ amount: 0, value: 0, icon: usdcIcon() }]).map(t => `<div>${lg('USDC', t.icon, 'm')} <b>${amt(t.amount, 2)} USDC</b> <span class="mute">${usd(t.value)}</span></div>`).join('')}</div></div></div>
       ${T.pp.length ? `<div class="lbl" style="margin:14px 0 6px">PERPS · ${T.pp.length} OPEN · <a href="#perps" style="color:var(--acc)">manage →</a></div><div class="scroll-x"><div class="tbl" style="min-width:760px"><div class="tr th" style="grid-template-columns:150px 100px 110px 110px 110px 1fr"><span>MARKET</span><span class="r">SIZE</span><span class="r">ENTRY</span><span class="r">MARK</span><span class="r">LIQ</span><span class="r">PNL</span></div>${T.pp.map(p => `<div class="tr" style="grid-template-columns:150px 100px 110px 110px 110px 1fr" onclick="location.hash='#perps'"><span><b class="${p.side === 'long' ? 'up' : 'dn'}">${esc(p.asset)} ${p.side === 'long' ? 'LONG' : 'SHORT'}</b> <span class="mute">${p.lev ? p.lev.toFixed(1) + 'x' : ''}</span></span><span class="r">${usd(p.size)}</span><span class="r">${usd(p.entry)}</span><span class="r">${usd(p.mark)}</span><span class="r dn">${usd(p.liq)}</span><span class="r ${cls(p.pnl)}">${p.pnl >= 0 ? '+' : '−'}${usd(Math.abs(p.pnl || 0))} <span class="mute">${pc(p.pnlPct)}</span></span></div>`).join('')}</div></div>` : ''}
       <div class="lbl" style="margin:14px 0 6px">STOCKS &amp; CITY · ${T.st.length}</div>
@@ -464,11 +465,25 @@
   let outT = 0;
   function cmdOut(t, k) { const o = $('#cmdOut'); o.textContent = t; o.className = 'out ' + (k || ''); clearTimeout(outT); outT = setTimeout(() => { o.textContent = ''; }, 9000); }
   const findSym = w => { if (!w || !S.P) return null; const u = w.toUpperCase().replace(/X$/, ''); if (S.by[u]) return u; if (S.by[w.toUpperCase()]) return w.toUpperCase(); const n = S.P.stocks.find(s => s.name.toLowerCase().startsWith(w.toLowerCase()) || s.tok.toUpperCase() === w.toUpperCase()); return n ? n.sym : null; };
-  const HELP = 'overview · buy <sym> <amt> [sol|usdc] · sell <sym> <amt|all|50%> · long|short <sol|btc|eth> <usdc> <lev>x · chart <sym> [1d…1y] · find <text> · city · claim <asset> · perps · portfolio · docs · connect';
+  const HELP = 'anon new|on|off|ls · trace <wallet> · fund <sol> · cashout <sol|max> · safe · overview · buy <sym> <amt> [sol|usdc] · sell <sym> <amt|all|50%> · long|short <sol|btc|eth> <usdc> <lev>x · chart <sym> [1d…1y] · find <text> · city · claim <asset> · perps · portfolio · docs · connect';
   function run(line) {
     const w = line.trim().split(/\s+/).filter(Boolean); if (!w.length) return;
     const c = w[0].toLowerCase();
     if (c === 'help' || c === '?') return cmdOut(HELP);
+    // the privacy layer, from the keyboard
+    const AS = window.ANONSAFE;
+    if (c === 'safe' || c === 'safehouse') { location.hash = '#safe'; return cmdOut('the safehouse', 'ok'); }
+    if (c === 'anon' || c === 'fresh' || c === 'wallets') {
+      const sub = (w[1] || (c === 'anon' ? 'new' : 'ls')).toLowerCase(), F = WAL.fresh();
+      if (sub === 'new') { if (!AS) return cmdOut('the safehouse is still loading', 'err'); AS.newFresh(true).then(f => f && cmdOut(`${f.label} made in this browser and switched on · fund it: fund 0.5`, 'ok')); return cmdOut('making a fresh wallet…'); }
+      if (sub === 'ls' || sub === 'list') return cmdOut(F.length ? F.map(f => `${f.n}: ${f.label} ${f.pub.slice(0, 4)}…${f.pub.slice(-4)}${WAL.active() === f.id ? ' (on)' : ''}`).join(' · ') : 'no fresh wallets yet · anon new', 'ok');
+      if (sub === 'off' || sub === 'main') { WAL.use('main'); return cmdOut(WAL.MAIN.addr ? 'trading from your main wallet' : 'fresh wallet off · connect a main wallet to trade from it', 'ok'); }
+      if (sub === 'on' || /^\d+$/.test(sub)) { const n = parseInt(/^\d+$/.test(sub) ? sub : w[2], 10); const f = n ? F.find(x => x.n === n) : F[F.length - 1]; if (!f) return cmdOut(F.length ? 'no fresh wallet #' + n + ' · anon ls' : 'no fresh wallets yet · anon new', 'err'); WAL.use(f.id); return cmdOut(`trading from ${f.label}`, 'ok'); }
+      return cmdOut('anon new · anon on [n] · anon off · anon ls', 'err');
+    }
+    if (c === 'main') { WAL.use('main'); return cmdOut(WAL.MAIN.addr ? 'trading from your main wallet' : 'connect a main wallet to trade from it', 'ok'); }
+    if (c === 'trace') { const a = w[1] || WAL.W.addr; if (!a || !B58.test(a)) return cmdOut('trace <wallet address>', 'err'); location.hash = '#safe'; setTimeout(() => AS && AS.trace(a), 120); return cmdOut('tracing ' + a.slice(0, 4) + '…' + a.slice(-4), 'ok'); }
+    if (c === 'fund' || c === 'cashout' || c === 'out') { const a = (w[1] || '').toLowerCase(); if (a && a !== 'max' && !/^\d*\.?\d+$/.test(a)) return cmdOut(c + ' <amount in SOL>', 'err'); location.hash = '#safe'; setTimeout(() => AS && AS.prefill(c === 'fund' ? 'fund' : 'out', a), 160); return cmdOut(c === 'fund' ? 'fund a fresh wallet privately: check the quote, then press fund' : 'cash out privately: check the quote, then press cash out', 'ok'); }
     if (c === 'clear') { $('#log').innerHTML = ''; return cmdOut(''); }
     if (c === 'connect') { openWallet(); return cmdOut('pick a wallet'); }
     if (c === 'disconnect') { WAL.disconnect(); return cmdOut('disconnected', 'ok'); }
@@ -807,7 +822,7 @@
     const up = L.filter(s => s.ch24 > 0.05).length, dn = L.filter(s => s.ch24 < -0.05).length, fl = L.length - up - dn, n = L.length || 1;
     const liq = S.P.stocks.reduce((a, s) => a + (s.liq || 0), 0), hold = S.P.stocks.reduce((a, s) => a + (s.holders || 0), 0), avg = L.length ? L.reduce((a, s) => a + s.ch24, 0) / L.length : null;
     $('#ovBrd').innerHTML = `<div><div class="row2"><span class="k">Up vs down</span><span class="v"><span class="up">${up}</span><span class="mute" style="font-size:15px"> / </span><span class="dn">${dn}</span></span></div>
-        <div class="bb${first ? ' grow' : ''}" style="margin-top:10px"><i style="width:${up / n * 100}%;background:#1f9e66"></i><i style="width:${fl / n * 100}%;background:#ddd4c4"></i><i style="width:${dn / n * 100}%;background:#d64457"></i></div>
+        <div class="bb${first ? ' grow' : ''}" style="margin-top:10px"><i style="width:${up / n * 100}%;background:#2ee69a"></i><i style="width:${fl / n * 100}%;background:#2a2566"></i><i style="width:${dn / n * 100}%;background:#ff4f6d"></i></div>
         <div class="bl"><span class="up">${up} up</span><span class="mute">${fl} flat</span><span class="dn">${dn} down</span></div></div>
       <div class="row2"><span class="k">Average move</span><span class="v ${cls(avg)}">${pc(avg)}</span></div>
       <div class="row2"><span class="k">On-chain liquidity</span><span class="v">${big(liq)}</span></div>

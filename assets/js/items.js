@@ -1,4 +1,4 @@
-/* anon: city items. Line icons drawn on a 64-unit grid, white strokes on a dusk tile.
+/* anon: city items. Line icons drawn on a 64-unit grid, white strokes on a night tile.
    Used for the city cards and, at claim time, rendered to a PNG that becomes the coin image. */
 (function () {
   const ICON = {
@@ -30,23 +30,33 @@
     jet: '<path d="M6 37c0-4 3-6 8-6h34c7 0 11 2 12 6-1 4-5 6-12 6H14c-5 0-8-2-8-6z"/><path d="M15 31L9 17h6l10 14"/><path d="M30 43l-8 12h6l12-12"/><path d="M28 36h1.5M34 36h1.5M40 36h1.5"/>',
     heli: '<path d="M18 30h20a10 10 0 0 1 10 10v2a4 4 0 0 1-4 4H22a8 8 0 0 1-8-8v-4a4 4 0 0 1 4-4z"/><path d="M48 38h12M60 33v10"/><path d="M8 22h48M32 22v8"/><path d="M20 53h26M25 46v7M39 46v7"/><path d="M34 32h8v6h-8z"/>',
   };
+  // night sky: top, middle, horizon, neon (the accent: lit windows and the icon's offset line)
   const PAL = {
-    estate: ['#3a0c2e', '#b0285f', '#e0846a', '#ffc46b'],
-    biz: ['#2c0a24', '#8a1c52', '#f0476c', '#f6a85a'],
-    ride: ['#2a0c34', '#6a1a6a', '#ff5f8f', '#f2c46b'],
+    estate: ['#06051a', '#120e45', '#2a1a74', '#9b7bff'],
+    biz: ['#06051a', '#0b1640', '#0f3f5e', '#2ee6d6'],
+    ride: ['#06051a', '#1a0c40', '#4a1670', '#ff3fd2'],
   };
   const CAT = { estate: 'real estate', biz: 'business', ride: 'ride' };
   let uid = 0;
-  // the tile: dusk gradient, a soft sun, the icon in white
+  // the tile: a night sky, one searchlight, a few stars, a dark skyline with lit windows, the icon in white over a neon offset
+  function seed(str) { let h = 2166136261; for (const ch of String(str || 'x')) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; }
   function tile(it, size, opt) {
     opt = opt || {};
-    const p = PAL[it.cat] || PAL.estate, id = 't' + (uid++);
-    const sw = opt.stroke || 2.4;
+    const p = PAL[it.cat] || PAL.estate, id = 't' + (uid++), R = seed(it.id || it.icon || it.name), r = opt.r != null ? opt.r : 0;
+    const sw = opt.stroke || 2.4, ic = ICON[it.icon] || '';
+    const sx = 8 + R() * 84, bx = sx + (R() < .5 ? -1 : 1) * (18 + R() * 22);
+    let stars = ''; for (let k = 0; k < 7; k++) stars += `<rect x="${(R() * 96 + 2).toFixed(1)}" y="${(R() * 34 + 3).toFixed(1)}" width="${k % 3 ? .8 : 1.3}" height="${k % 3 ? .8 : 1.3}" fill="#fff" opacity="${(.35 + R() * .5).toFixed(2)}"/>`;
+    let sky = 'M0 100', win = '', x = 0;
+    while (x < 100) { const w = 5 + Math.floor(R() * 7), h = 3 + Math.floor(R() * 9); sky += `V${100 - h}h${w}`; if (h > 5 && R() < .7) win += `<rect x="${(x + 1.5 + R() * (w - 3)).toFixed(1)}" y="${(100 - h + 1.5 + R() * (h - 3)).toFixed(1)}" width="1" height="1" fill="${p[3]}" opacity=".85"/>`; x += w; }
+    sky += 'V100z';
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="${size}" height="${size}"${opt.slice ? ' preserveAspectRatio="xMidYMid slice"' : ''}>
-      <defs><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p[0]}"/><stop offset=".45" stop-color="${p[1]}"/><stop offset=".78" stop-color="${p[2]}"/><stop offset="1" stop-color="${p[3]}"/></linearGradient>
-      <radialGradient id="${id}s" cx=".5" cy=".86" r=".55"><stop offset="0" stop-color="#fff2dc" stop-opacity=".85"/><stop offset=".35" stop-color="#ffd2b0" stop-opacity=".35"/><stop offset="1" stop-color="#ffb48f" stop-opacity="0"/></radialGradient></defs>
-      <rect width="100" height="100" rx="${opt.r != null ? opt.r : 0}" fill="url(#${id}g)"/><rect width="100" height="100" rx="${opt.r != null ? opt.r : 0}" fill="url(#${id}s)"/>
-      <g transform="translate(18 18)" fill="none" stroke="#fff" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICON[it.icon] || ''}</g>
+      <defs><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p[0]}"/><stop offset=".5" stop-color="${p[1]}"/><stop offset=".88" stop-color="${p[2]}"/><stop offset="1" stop-color="${p[2]}"/></linearGradient>
+      <clipPath id="${id}c"><rect width="100" height="100" rx="${r}"/></clipPath></defs>
+      <g clip-path="url(#${id}c)"><rect width="100" height="100" fill="url(#${id}g)"/>
+      <polygon points="${sx.toFixed(1)},-2 ${(sx + 2.5).toFixed(1)},-2 ${(bx + 15).toFixed(1)},101 ${(bx - 15).toFixed(1)},101" fill="#dff8ff" opacity=".07"/>${stars}
+      <path d="${sky}" fill="#05041a"/>${win}</g>
+      <g transform="translate(19.3 19.3)" fill="none" stroke="${p[3]}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity=".9">${ic}</g>
+      <g transform="translate(18 18)" fill="none" stroke="#fff" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ic}</g>
     </svg>`;
   }
   // PNG for the coin image (pump.fun shows it everywhere the coin is listed)
@@ -60,7 +70,7 @@
     });
   }
   // the real photo of an item (made once on the server, served from the CDN); the line tile stays underneath as the fallback
-  function photo(it, thumb) { const u = it.img || `/api/m?a=cimg&id=${encodeURIComponent(it.id)}&v=1`; return thumb ? u + '&s=t' : u; }
+  function photo(it, thumb) { const u = it.img || `/api/m?a=cimg&id=${encodeURIComponent(it.id)}&v=n1`; return thumb ? u + '&s=t' : u; }
   function art(it, size, opt) {
     return tile(it, size, Object.assign({ r: 0, slice: true }, opt || {})) + (it.id ? `<img class="cphoto" src="${photo(it)}" alt="" loading="lazy" decoding="async" onload="this.classList.add('on')" onerror="this.remove()">` : '');
   }
