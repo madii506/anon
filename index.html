@@ -39,16 +39,6 @@ button{cursor:pointer}
 .wm,.feat,h2,.num{font-feature-settings:normal}
 .grain{position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 
-/* ---------------- top links: centred, no logo in the corner */
-.top{position:fixed;left:0;right:0;top:0;z-index:40;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:64px;padding:0 var(--pad);transition:background .4s,border-color .4s,height .4s;border-bottom:1px solid transparent}
-.top.solid{height:56px;background:rgba(7,6,26,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
-.top nav{grid-column:2;display:flex;gap:4px;align-items:center}
-.top nav a{height:36px;display:inline-flex;align-items:center;padding:0 13px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#c9c5f2;transition:color .2s,background .2s}
-.top nav a:hover{color:#fff;background:rgba(123,92,255,.16)}
-.top nav a.go{margin-left:6px;color:#04130f;background:var(--teal);box-shadow:0 3px 0 #0d6b63}
-.top nav a.go:hover{background:#5af0e2}
-@media (max-width:860px){.top nav a:not(.go):not(.k){display:none}}
-
 /* ---------------- hero: the city at night */
 .hero{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;background:#07061a;color:var(--cream);isolation:isolate}
 .hero .poster{position:absolute;inset:0;background:url(/assets/img/city-poster.jpg) 50% 50%/cover no-repeat;z-index:-3}
@@ -58,19 +48,19 @@ button{cursor:pointer}
 .hero .veil{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 46% at 50% 44%,rgba(7,6,26,.42),transparent 70%),linear-gradient(180deg,rgba(7,6,26,.35) 0%,rgba(7,6,26,0) 22%,rgba(7,6,26,0) 62%,rgba(7,6,26,.85) 94%,#07061a 100%)}
 .stack{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 70px;pointer-events:none}
 .stack>*{pointer-events:auto}
-.wm{position:relative;font-family:Bowlby,var(--disp);font-weight:400;font-size:clamp(96px,17vw,270px);line-height:.88;letter-spacing:-.005em;color:var(--cream);text-shadow:.045em .045em 0 var(--mag),.085em .085em 0 var(--ink2);white-space:nowrap;padding-right:.08em}
+.wm{position:relative;font-family:Bowlby,var(--disp);font-weight:400;font-size:clamp(76px,12.5vw,196px);line-height:.88;letter-spacing:-.005em;color:var(--cream);text-shadow:.045em .045em 0 var(--mag),.085em .085em 0 var(--ink2);white-space:nowrap;padding-right:.08em}
 .wm .l{display:inline-block;min-width:.55em;text-align:center}
 .wm .l.s{color:#9d97d8;text-shadow:none}
 .spk{position:absolute;width:.13em;height:.13em;background:var(--cream);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:pop .5s 1.3s var(--ease) both,twinkle 3s 1.9s ease-in-out infinite;pointer-events:none}
 .spk.s1{right:-.06em;top:-.04em}.spk.s2{right:-.2em;top:.2em;width:.06em;height:.06em;background:var(--teal);animation-delay:1.4s,2.4s}.spk.s3{left:-.12em;bottom:.04em;width:.08em;height:.08em;animation-delay:1.5s,2.8s}
 @keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.5) rotate(45deg);opacity:.75}}
 @keyframes pop{from{opacity:0;transform:scale(.6)}}
-.feat{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.5em 1em;margin-top:clamp(18px,3vh,30px);font-family:var(--disp);font-weight:700;font-size:clamp(12px,1.15vw,16.5px);letter-spacing:.24em;text-transform:uppercase;color:var(--cream);text-shadow:.08em .08em 0 var(--ink2);animation:rise .8s .9s var(--ease) both}
+.feat{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.5em 1em;margin-top:clamp(20px,3.4vh,34px);font-family:var(--disp);font-weight:700;font-size:clamp(12px,1.15vw,16.5px);letter-spacing:.24em;text-transform:uppercase;color:var(--cream);text-shadow:.08em .08em 0 var(--ink2);animation:rise .8s .9s var(--ease) both}
 .feat i{width:.62em;height:.62em;background:var(--teal);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%)}
 .feat .fg{display:inline-flex;align-items:center;gap:1em;white-space:nowrap}
 .hero .p{max-width:540px;margin-top:14px;font-size:clamp(15px,1.2vw,17px);line-height:1.6;color:#e2deff;text-shadow:0 1px 14px rgba(7,6,26,.8);animation:rise .8s 1.05s var(--ease) both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
-.cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:clamp(22px,3.4vh,34px);animation:rise .8s 1.2s var(--ease) both}
+.cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:clamp(26px,4.2vh,42px);animation:rise .8s 1.05s var(--ease) both}
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 30px;border-radius:999px;font-weight:800;font-size:13px;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s,letter-spacing .45s var(--ease)}
 .btn:hover{letter-spacing:.24em}
 .btn .a{transition:transform .35s var(--ease)}.btn:hover .a{transform:translateX(4px)}
@@ -85,154 +75,20 @@ button{cursor:pointer}
 .ca{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 6px 0 14px;border-radius:999px;background:rgba(7,6,26,.6);border:1px solid var(--line2);font-family:var(--mono);font-size:12.5px}
 .ca span{font-weight:800}.ca button{height:30px;padding:0 12px;border-radius:999px;background:var(--teal);color:#04130f;font-weight:800;font-size:11px;letter-spacing:.08em}
 .xl{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(7,6,26,.6);border:1px solid var(--line2)}
-.cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:#9d97d8;animation:rise .8s 1.6s var(--ease) both}
+.cue-x{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:#9d97d8;animation:rise .8s 1.6s var(--ease) both}
 .cue i{width:1px;height:34px;background:linear-gradient(var(--teal),transparent);animation:drip 2.2s ease-in-out infinite}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-/* ---------------- bands */
-.band{position:relative;padding:clamp(80px,11vw,140px) var(--pad);border-top:1px solid var(--line);background:var(--bg)}
-.band.alt{background:var(--bg2)}
-.band::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(800px 300px at 50% 0%,rgba(123,92,255,.09),transparent 70%)}
-.in{position:relative;max-width:1200px;margin:0 auto}
-.eb{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mag)}
-.eb::after{content:"";flex:0 0 56px;height:1px;background:linear-gradient(90deg,var(--mag),transparent)}
-h2{margin-top:18px;font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,58px);line-height:1.04;letter-spacing:-.035em;color:#fff;text-shadow:.04em .04em 0 rgba(123,92,255,.7);max-width:18ch;text-wrap:balance}
-h2 em{font-style:normal;color:var(--teal)}
-.lead{margin-top:18px;max-width:62ch;font-size:clamp(15.5px,1.25vw,17.5px);color:var(--sub);line-height:1.65}
-.two{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(30px,5vw,70px);align-items:start}
-@media (max-width:960px){.two{grid-template-columns:minmax(0,1fr)}}
-.card{position:relative;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 45%),var(--pn);box-shadow:0 30px 80px -50px rgba(0,0,0,.9)}
-.rv{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
-.rv.vis{opacity:1;transform:none}
+/* one screen: the city, the word, the line, the buttons. Nothing under it. */
+html,body{height:100%}
+@media (min-height:560px){html,body{overflow:hidden}}
+@media (max-width:520px){.btn{height:50px;padding:0 20px;font-size:12.5px}.feat{flex-direction:column;letter-spacing:.16em;gap:.7em}.feat .fg{gap:.8em}.feat .fm{display:none}}
 
-/* 01 trace */
-.tr-f{display:flex;gap:10px;margin-top:28px}
-.tr-f input{flex:1;min-width:0;height:56px;padding:0 18px;border-radius:14px;border:1px solid var(--line2);background:#090820;font-family:var(--mono);font-size:14px;color:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
-.tr-f input:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(46,230,214,.12)}
-.tr-f input::placeholder{color:#4d4888}
-.tr-f button{height:56px;padding:0 24px;border-radius:14px;background:var(--teal);color:#04130f;font-weight:800;letter-spacing:.16em;font-size:12.5px;text-transform:uppercase;box-shadow:0 4px 0 #0d6b63}
-.tr-f button:disabled{opacity:.6}
-.tr-ex{margin-top:12px;font-size:12.5px;color:var(--dim)}.tr-ex button{color:var(--sub);border-bottom:1px dashed var(--line2);font-family:var(--mono);font-size:12px}.tr-ex button:hover{color:var(--teal)}
-.chain{padding:26px;min-height:360px}
-.chain .hd{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
-.chain .hd b{color:var(--teal);font-weight:700}
-.nodes{position:relative;margin-top:22px;display:grid;gap:0}
-.node{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px 0}
-.node .dot{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:800;color:#04130f;background:var(--teal)}
-.node.f .dot{background:#ff7d93}.node.f2 .dot{background:var(--vio);color:#fff}
-.node b{display:block;font-family:var(--mono);font-size:13.5px;color:#fff;word-break:break-all}
-.node span{font-size:12.5px;color:var(--dim)}
-.node em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--sub);text-align:right}
-.node a{color:var(--teal)}
-.link{position:relative;margin-left:21px;height:34px;border-left:2px dashed #ff4f6d}
-.link::after{content:attr(data-l);position:absolute;left:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ff7d93;white-space:nowrap}
-.verdict{margin-top:18px;padding:14px 16px;border-radius:14px;background:rgba(255,79,109,.08);border:1px solid rgba(255,79,109,.3);color:#ffc2cc;font-size:13.5px;line-height:1.55}
-.verdict.ok{background:rgba(46,230,214,.07);border-color:rgba(46,230,214,.35);color:#c9fff9}
-.ph-empty{display:grid;place-items:center;min-height:300px;text-align:center;color:var(--dim);font-size:13.5px}
-.ph-empty svg{margin-bottom:12px;color:#3a3570}
-.skel{height:16px;border-radius:6px;background:linear-gradient(90deg,#13103a,#1d1950,#13103a);background-size:200% 100%;animation:sk 1.2s linear infinite;margin:14px 0}
-@keyframes sk{to{background-position:-200% 0}}
-
-/* 02 three moves */
-.moves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:46px}
-@media (max-width:960px){.moves{grid-template-columns:minmax(0,1fr)}}
-.mv{padding:28px 26px 26px;display:flex;flex-direction:column;gap:12px;min-height:300px}
-.mv .n{font-family:Bowlby,var(--disp);font-size:58px;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(46,230,214,.7)}
-.mv h3{font-family:var(--disp);font-weight:800;font-size:21px;letter-spacing:-.02em;color:#fff}
-.mv p{color:var(--sub);font-size:14.5px}
-.mv .act{margin-top:auto}
-.mk{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 20px;border-radius:12px;background:var(--teal);color:#04130f;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 4px 0 #0d6b63;transition:transform .2s}
-.mk:hover{transform:translateY(-1px)}
-.mk.ghost{background:transparent;color:var(--ink);border:1px solid var(--line2);box-shadow:none}.mk.ghost:hover{border-color:var(--teal);color:var(--teal)}
-.made{display:none;margin-top:4px;padding:14px;border-radius:14px;border:1px solid rgba(46,230,214,.4);background:rgba(46,230,214,.06);animation:rise .6s var(--ease)}
-.made.on{display:block}
-.made b{display:block;font-family:var(--mono);font-size:12.5px;color:#fff;word-break:break-all;margin:4px 0 8px}
-.made span{font-size:12px;color:var(--sub)}
-.made a{color:var(--teal);font-weight:700;font-size:12.5px}
-
-/* 03 routes */
-.routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:46px}
-@media (max-width:960px){.routes{grid-template-columns:minmax(0,1fr)}}
-.rc{padding:26px}
-.rc .rh{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.rc .rh b{font-family:var(--disp);font-weight:800;font-size:20px;letter-spacing:-.02em;color:#fff}
-.tagl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--sub)}
-.tagl.live{color:var(--up);border-color:rgba(46,230,154,.4)}.tagl.live::before{content:"● "}
-.tagl.off{color:var(--dn);border-color:rgba(255,79,109,.4)}
-.path{position:relative;display:grid;grid-template-columns:auto 1fr auto 1fr auto;align-items:center;gap:10px;margin:26px 0 22px}
-.path .pt{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:center}
-.path .pt i{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-weight:800;font-size:11px;color:#fff;background:#14113a;border:1px solid var(--line2)}
-.path .pt.a i{border-color:rgba(255,79,109,.55);color:#ff9fb0}.path .pt.c i{border-color:rgba(46,230,214,.6);color:var(--teal)}.path .pt.m i{border-color:rgba(255,63,210,.6);color:var(--mag)}
-.path .ln{position:relative;height:2px;background:repeating-linear-gradient(90deg,#2b2662 0 6px,transparent 6px 12px);overflow:hidden}
-.path .ln::after{content:"";position:absolute;top:-2px;left:-30%;width:30%;height:6px;border-radius:6px;background:linear-gradient(90deg,transparent,var(--teal));animation:pk 2.4s linear infinite}
-.path .ln.b::after{animation-delay:1.2s}
-@keyframes pk{to{left:100%}}
-.nolink{position:absolute;left:23px;right:23px;top:-16px;height:14px;border:1px dashed rgba(255,79,109,.55);border-bottom:0;border-radius:10px 10px 0 0}
-.nolink::after{content:"no on-chain link";position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:0 8px;background:var(--pn);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#ff7d93;white-space:nowrap}
-.qrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.qrow div{padding:14px;border-radius:14px;background:#090820;border:1px solid var(--line)}
-.qrow span{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.qrow b{display:block;margin-top:6px;font-family:var(--mono);font-size:clamp(16px,1.6vw,20px);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rc p{margin-top:16px;font-size:13.5px;color:var(--sub)}
-.rc .fine{margin-top:10px;font-size:12px;color:var(--dim)}
-
-/* 04 markets */
-.mkts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:46px}
-@media (max-width:1100px){.mkts{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:620px){.mkts{grid-template-columns:minmax(0,1fr)}}
-.mt{display:flex;flex-direction:column;padding:22px;min-height:340px;transition:border-color .3s,transform .3s var(--ease)}
-.mt:hover{border-color:rgba(46,230,214,.45);transform:translateY(-3px)}
-.mt .mh{display:flex;justify-content:space-between;align-items:baseline}
-.mt .mh b{font-family:var(--disp);font-weight:800;font-size:18px;color:#fff}
-.mt .mh span{font-family:var(--mono);font-size:11px;color:var(--dim)}
-.mt ul{list-style:none;margin:14px 0 18px;display:grid;gap:0}
-.mt li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
-.mt li b{font-family:var(--mono);font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mt li span{font-family:var(--mono);color:var(--sub);text-align:right;white-space:nowrap}
-.mt li .up{color:var(--up)}.mt li .dn{color:var(--dn)}
-.mt .go{margin-top:auto;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
-.mt .go:hover{color:#fff}
-.mt .big{font-family:var(--mono);font-size:44px;font-weight:800;color:#fff;margin-top:14px;line-height:1}
-.mt .sm{font-size:13px;color:var(--sub);margin-top:8px}
-
-/* 05 rules */
-.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:46px}
-@media (max-width:900px){.rules{grid-template-columns:minmax(0,1fr)}}
-.ru{padding:28px}
-.ru h3{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:800;font-size:19px;color:#fff}
-.ru h3 i{width:10px;height:10px;border-radius:50%;background:var(--teal);box-shadow:0 0 14px var(--teal)}
-.ru.lim h3 i{background:#ffb03d;box-shadow:0 0 14px #ffb03d}
-.ru ul{list-style:none;margin-top:16px}
-.ru li{position:relative;padding:12px 0 12px 26px;border-top:1px solid var(--line);color:var(--sub);font-size:14.5px}
-.ru li::before{content:"✕";position:absolute;left:0;top:12px;font-family:var(--mono);font-size:12px;color:var(--teal)}
-.ru.lim li::before{content:"!";color:#ffb03d;font-weight:800;left:4px}
-.ru li b{color:#fff;font-weight:700}
-
-/* 06 faq */
-.faq{margin-top:40px;max-width:900px}
-.faq details{border-top:1px solid var(--line)}
-.faq details:last-child{border-bottom:1px solid var(--line)}
-.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;cursor:pointer;font-family:var(--disp);font-weight:700;font-size:clamp(16px,1.4vw,19px);color:#fff}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary i{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-style:normal;color:var(--teal);transition:transform .3s var(--ease)}
-.faq details[open] summary i{transform:rotate(45deg)}
-.faq details p{padding:0 50px 22px 0;color:var(--sub);max-width:68ch}
-
-/* the last word */
-.end{position:relative;padding:clamp(90px,12vw,150px) var(--pad);text-align:center;border-top:1px solid var(--line);overflow:hidden;background:radial-gradient(700px 300px at 50% 120%,rgba(255,63,210,.18),transparent 70%),radial-gradient(900px 340px at 50% 110%,rgba(123,92,255,.22),transparent 72%),var(--bg)}
-.end .wm{font-size:clamp(70px,11vw,160px)}
-.end .cta{animation:none}
-.end p{margin:18px auto 0;max-width:46ch;color:var(--sub)}
-@media (max-width:520px){.btn{height:50px;padding:0 20px;font-size:12.5px}.feat{flex-direction:column;letter-spacing:.16em;gap:.7em}.feat .fg{gap:.8em}.feat .fm{display:none}.tr-f{flex-direction:column}.tr-f button{height:52px}.qrow{grid-template-columns:minmax(0,1fr)}.path .pt span{display:none}.faq details p{padding-right:0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
-
-<header class="top" id="top"><nav aria-label="Sections">
-  <a href="#trace">trace</a><a href="#moves">go anon</a><a href="#routes">routes</a><a href="#markets">markets</a><a href="#rules">rules</a><a href="#faq">faq</a><a class="go" href="/app">terminal →</a>
-</nav></header>
 
 <section class="hero" id="hero">
   <div class="poster" aria-hidden="true"></div>
@@ -241,108 +97,16 @@ h2 em{font-style:normal;color:var(--teal)}
   <div class="stack">
     <h1 class="wm" id="wm" aria-label="anon"><span class="l" aria-hidden="true">a</span><span class="l" aria-hidden="true">n</span><span class="l" aria-hidden="true">o</span><span class="l" aria-hidden="true">n</span><i class="spk s1" aria-hidden="true"></i><i class="spk s2" aria-hidden="true"></i><i class="spk s3" aria-hidden="true"></i></h1>
     <div class="feat"><span class="fg"><span>Fresh wallets</span><i aria-hidden="true"></i><span>Private routes</span></span><i class="fm" aria-hidden="true"></i><span class="fg"><span>Stocks</span><i aria-hidden="true"></i><span>Perps</span><i aria-hidden="true"></i><span>Trenches</span></span></div>
-    <p class="p">The privacy layer for the city. Trade from wallets nobody can link to you.</p>
     <div class="cta">
       <a class="btn pri" href="/app#safe"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 9.5C2 7.6 3.6 6.5 5.4 7l3.1.9c1 .3 2.1.4 3.5.4s2.5-.1 3.5-.4l3.1-.9c1.8-.5 3.4.6 3.4 2.5 0 4-2.6 7-5.6 7-1.7 0-2.7-1-3.2-2.2-.2-.5-.7-.8-1.2-.8s-1 .3-1.2.8C10.3 15.5 9.3 16.5 7.6 16.5 4.6 16.5 2 13.5 2 9.5Z"/></svg>Go anon <span class="a">→</span></a>
-      <a class="btn sec" href="/app">Enter the terminal</a>
+      <a class="btn sec" href="/app#overview">Enter the terminal</a>
     </div>
     <div class="links" id="caSlot"></div>
   </div>
-  <a class="cue" href="#trace" aria-label="Scroll down"><span>SCROLL</span><i></i></a>
 </section>
 
-<main>
-  <section class="band" id="trace"><div class="in two">
-    <div class="rv">
-      <div class="eb">01 — your wallet is public</div>
-      <h2>Anyone can see <em>who funded</em> your wallet.</h2>
-      <p class="lead">Paste any Solana address. This is what a stranger learns in two seconds: where its first SOL came from, and where that wallet's came from. Every wallet you fund from your main is tied to you for good.</p>
-      <form class="tr-f" id="trF" autocomplete="off"><input id="trQ" spellcheck="false" placeholder="paste a wallet address" aria-label="Solana wallet address"><button id="trB" type="submit">Trace</button></form>
-      <div class="tr-ex" id="trEx"></div>
-    </div>
-    <div class="card chain rv" id="trOut"><div class="ph-empty"><div><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M9 6h6M18 9v6M8.2 8.2l7.6 7.6"/></svg><div>The trail shows up here, read live from Solana.</div></div></div></div>
-  </div></section>
-
-  <section class="band alt" id="moves"><div class="in">
-    <div class="rv"><div class="eb">02 — go anon in three moves</div>
-    <h2>Break the link. <em>Then</em> trade.</h2>
-    <p class="lead">anon keeps your main wallet out of every trade. It makes fresh wallets in your browser, funds them through a private route, and signs every trade with them.</p></div>
-    <div class="moves">
-      <div class="card mv rv"><div class="n">1</div><h3>Make a fresh wallet</h3><p>A new Solana keypair, made right here in your browser. Its key never leaves it, and anon never sees it.</p>
-        <div class="act"><button class="mk" id="mkW" type="button">Make one now</button><div class="made" id="made"></div></div></div>
-      <div class="card mv rv" style="transition-delay:.08s"><div class="n">2</div><h3>Fund it privately</h3><p>Your main wallet pays a one-time deposit address. A NEAR Intents solver pays the fresh wallet from its own funds. On-chain, no transfer ever runs between your two wallets.</p>
-        <div class="act"><a class="mk ghost" href="#routes">See the routes</a></div></div>
-      <div class="card mv rv" style="transition-delay:.16s"><div class="n">3</div><h3>Trade the city from it</h3><p>Stocks, perps, the trenches and city coins. While a fresh wallet is on, it signs every trade with no popups. Cash out the same way.</p>
-        <div class="act"><a class="mk ghost" href="/app#safe">Open the safehouse</a></div></div>
-    </div>
-  </div></section>
-
-  <section class="band" id="routes"><div class="in">
-    <div class="rv"><div class="eb">03 — private routes, live</div>
-    <h2>Two ways in. <em>Neither</em> leaves a trail.</h2>
-    <p class="lead">Quotes come live from NEAR Intents and refresh every 20 seconds. anon never holds the funds in between: your wallet pays the route, and the route pays your fresh wallet.</p></div>
-    <div class="routes">
-      <div class="card rc rv"><div class="rh"><b>Fast hop</b><span class="tagl" id="hopTag">quote…</span></div>
-        <div class="path"><div class="pt a"><i>MAIN</i><span>your wallet</span></div><div class="ln"></div><div class="pt m"><i>DEP</i><span>one-time deposit</span></div><div class="ln b"></div><div class="pt c"><i>ANON</i><span>fresh wallet</span></div><div class="nolink"></div></div>
-        <div class="qrow"><div><span>1 SOL in</span><b id="hopOut">—</b></div><div><span>fee</span><b id="hopFee">—</b></div><div><span>time</span><b id="hopT">—</b></div></div>
-        <p>SOL to SOL through NEAR Intents. A solver delivers the fresh wallet's SOL from its own funds, so the fresh wallet's funder is the solver, not you.</p></div>
-      <div class="card rc rv" style="transition-delay:.08s"><div class="rh"><b>Shielded</b><span class="tagl" id="zecTag">quote…</span></div>
-        <div class="path"><div class="pt a"><i>MAIN</i><span>your wallet</span></div><div class="ln"></div><div class="pt m"><i>ZEC</i><span>your shielded wallet</span></div><div class="ln b"></div><div class="pt c"><i>ANON</i><span>fresh wallet</span></div><div class="nolink"></div></div>
-        <div class="qrow"><div><span>1 SOL in</span><b id="zecOut">—</b></div><div><span>ZEC per SOL</span><b id="zecPx">—</b></div><div><span>time</span><b id="zecT">—</b></div></div>
-        <p>Two legs through your own Zcash wallet: SOL becomes shielded ZEC, then comes back out as SOL to the fresh wallet. Slower, and the strongest break.</p></div>
-    </div>
-  </div></section>
-
-  <section class="band alt" id="markets"><div class="in">
-    <div class="rv"><div class="eb">04 — what you trade from it</div>
-    <h2>The whole city. <em>None</em> of it tied to you.</h2>
-    <p class="lead">The full terminal: tokenized stocks, perps, every fresh pump.fun coin and a city of assets that trade as coins. All live, all signed by whichever wallet is on.</p></div>
-    <div class="mkts">
-      <a class="card mt rv" href="/app#markets"><div class="mh"><b>Stocks</b><span id="stN">68 listed</span></div><ul id="stL"><li><b>loading</b><span>—</span></li></ul><span class="go">trade stocks →</span></a>
-      <a class="card mt rv" href="/app#perps" style="transition-delay:.06s"><div class="mh"><b>Perps</b><span>up to 100x</span></div><ul id="ppL"><li><b>loading</b><span>—</span></li></ul><span class="go">open the desk →</span></a>
-      <a class="card mt rv" href="/app#trench" style="transition-delay:.12s"><div class="mh"><b>Trenches</b><span>fresh on pump.fun</span></div><ul id="tnL"><li><b>loading</b><span>—</span></li></ul><span class="go">ape from a fresh wallet →</span></a>
-      <a class="card mt rv" href="/app#city" style="transition-delay:.18s"><div class="mh"><b>The city</b><span>24 assets</span></div><div class="big" id="ctOpen">—</div><div class="sm" id="ctSm">still open to claim. Each one launches as a real pump.fun coin, and its founder earns the creator fees.</div><ul id="ctL" style="margin-top:14px"></ul><span class="go">claim one →</span></a>
-    </div>
-  </div></section>
-
-  <section class="band" id="rules"><div class="in">
-    <div class="rv"><div class="eb">05 — the rules</div>
-    <h2>What anon never does. <em>And</em> what it can't hide.</h2></div>
-    <div class="rules">
-      <div class="card ru rv"><h3><i></i>anon never</h3><ul>
-        <li><b>Holds your funds.</b> Routes pay your wallets directly; nothing sits with anon.</li>
-        <li><b>Sees your keys.</b> Fresh keys are made and kept in your browser only.</li>
-        <li><b>Asks for a seed phrase.</b> Your main wallet only signs what it shows you.</li>
-        <li><b>Tracks you.</b> No accounts, no cookies, no analytics.</li>
-        <li><b>Adds a fee to trades.</b> You pay the network and the route, both shown first.</li>
-      </ul></div>
-      <div class="card ru lim rv" style="transition-delay:.08s"><h3><i></i>honest limits</h3><ul>
-        <li><b>Amounts and timing can match.</b> 1.234 SOL in and 1.233 out a minute later is easy to pair. Use round amounts and wait.</li>
-        <li><b>The route provider sees its own swap.</b> NEAR Intents knows both ends of a route it fills.</li>
-        <li><b>Your IP reaches the APIs.</b> Use a VPN if that matters to you.</li>
-        <li><b>You can undo it.</b> Sending between your main and a fresh wallet links them again.</li>
-      </ul></div>
-    </div>
-  </div></section>
-
-  <section class="band alt" id="faq"><div class="in">
-    <div class="rv"><div class="eb">06 — faq</div><h2>Questions, <em>answered.</em></h2></div>
-    <div class="faq rv">
-      <details><summary>Is anon a mixer?<i>+</i></summary><p>No. anon never pools or holds anyone's funds. A fresh wallet is a new keypair in your browser. A route is a swap filled by NEAR Intents solvers, who pay the destination from their own funds. The privacy comes from a new wallet plus a swap, not from mixing.</p></details>
-      <details><summary>Where does a fresh wallet's key live?<i>+</i></summary><p>Only in this browser's storage. anon's servers never see it. Use export in the safehouse to copy it into Phantom, Solflare or Backpack, and do that before you clear your browser data, which deletes it.</p></details>
-      <details><summary>Do I still need Phantom?<i>+</i></summary><p>Only to fund a fresh wallet from your main one. Once a fresh wallet holds SOL, it trades by itself. While it is on, trades go through without a popup, because the key is in this browser.</p></details>
-      <details><summary>What does it cost?<i>+</i></summary><p>anon adds no fee. A fast hop costs about 0.1% through NEAR Intents, and the shielded route costs a little more across its two legs. Trades pay the Solana network fee and the route's price impact, both shown before you confirm.</p></details>
-      <details><summary>What can I trade from a fresh wallet?<i>+</i></summary><p>Everything in the terminal: 68 tokenized stocks, ETFs and metals (xStocks, not offered to US persons), SOL, BTC and ETH perps through Jupiter, live pump.fun coins, and the city's 24 assets.</p></details>
-      <details><summary>Is anon affiliated with NEAR, Zcash, Jupiter, pump.fun or any game?<i>+</i></summary><p>No. anon is independent. It uses their public APIs and is not endorsed by any of them. Nothing here is financial or legal advice.</p></details>
-      <details><summary>What is $ANON?<i>+</i></summary><p>The city's coin. The terminal works the same whether you hold it or not.</p></details>
-    </div>
-  </div></section>
-
-  <section class="end"><div class="wm" aria-hidden="true">anon</div><p>Your main wallet stays home. A fresh one goes out.</p><div class="cta" style="margin-top:28px"><a class="btn pri" href="/app#safe">Go anon <span class="a">→</span></a><a class="btn sec" href="/app">Enter the terminal</a></div></section>
-</main>
 
 <script src="/assets/js/config.js?v=a1"></script>
-<script src="/assets/js/wallet.js?v=a1"></script>
 <script>
 (function () {
   const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
@@ -382,96 +146,13 @@ h2 em{font-style:normal;color:var(--teal)}
   function boot() {
     if (still || !glOk()) return;
     import('/assets/js/city3d.js?v=a1').then(m => {
-      city = m.startCity($('#cityGL'), { pal: NIGHT, fog: 0.0002, exposure: 1.0, night: 1, sunElev: 1, sunAz: 284, landmark: false, onFirst: () => $('#cityGL').classList.add('on'), visible: () => scrollY < innerHeight * 1.1 });
-      addEventListener('scroll', () => { if (!city) return; city.setScroll(Math.min(1, scrollY / innerHeight)); city.vis(); }, { passive: true });
+      city = m.startCity($('#cityGL'), { pal: NIGHT, fog: 0.0002, exposure: 1.0, night: 1, sunElev: 1, sunAz: 284, landmark: false, onFirst: () => $('#cityGL').classList.add('on') });
     }).catch(e => console.warn('city', e));
   }
   if (document.readyState === 'complete') setTimeout(boot, 60); else addEventListener('load', () => setTimeout(boot, 60));
-  if (fine && !still) addEventListener('pointermove', e => { if (city && city.setPointer && scrollY < innerHeight) city.setPointer(e.clientX / innerWidth * 2 - 1, e.clientY / innerHeight * 2 - 1); }, { passive: true });
+  if (fine && !still) addEventListener('pointermove', e => { if (city && city.setPointer) city.setPointer(e.clientX / innerWidth * 2 - 1, e.clientY / innerHeight * 2 - 1); }, { passive: true });
   if (fine && !still) $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.translate = `${((e.clientX - r.left) / r.width - 0.5) * 10}px ${((e.clientY - r.top) / r.height - 0.5) * 8}px`; }); b.addEventListener('pointerleave', () => { b.style.translate = '0 0'; }); });
 
-  // the top links turn solid once you leave the hero; sections fade in as they arrive
-  const top = $('#top'); const onS = () => top.classList.toggle('solid', scrollY > innerHeight * 0.6); addEventListener('scroll', onS, { passive: true }); onS();
-  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' }) : null;
-  $$('.rv').forEach(el => io ? io.observe(el) : el.classList.add('vis'));
-
-  // 01: trace any wallet, live
-  const EX = ['5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9', 'GThUX1Atko4tqhN2NaiTazWSeFWMuiUvfFnyJyUghFMJ'];
-  $('#trEx').innerHTML = 'try one: ' + EX.map(a => `<button type="button" data-a="${a}">${short(a)}</button>`).join(' · ') + (WAL() && WAL().MAIN.addr ? ` · <button type="button" data-a="${WAL().MAIN.addr}">your wallet</button>` : '');
-  $('#trEx').addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b) return; $('#trQ').value = b.dataset.a; trace(); });
-  $('#trF').addEventListener('submit', e => { e.preventDefault(); trace(); });
-  function when(t) { return t ? new Date(t * 1000).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'unknown date'; }
-  async function trace() {
-    const a = $('#trQ').value.trim(); const out = $('#trOut');
-    if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a)) { out.innerHTML = `<div class="ph-empty"><div>That doesn't look like a Solana address.</div></div>`; return; }
-    $('#trB').disabled = true;
-    out.innerHTML = `<div class="hd"><span>reading Solana</span><b>live</b></div><div class="skel" style="width:80%"></div><div class="skel" style="width:60%"></div><div class="skel" style="width:70%"></div>`;
-    try {
-      const r = await api('trace', { addr: a });
-      const h1 = r.hop1, h2 = r.hop2, f1 = h1 && h1.first, f2 = h2 && h2.first;
-      let html = `<div class="hd"><span>the trail · read live from Solana</span><b>${h1.txs ? (h1.more ? h1.txs.toLocaleString() + '+' : h1.txs.toLocaleString()) + ' txs' : 'new wallet'}</b></div><div class="nodes">`;
-      html += `<div class="node"><div class="dot">YOU</div><div><b>${esc(short(a))}</b><span>${r.sol != null ? r.sol.toFixed(3) + ' SOL now' : ''}</span></div><em><a href="https://solscan.io/account/${esc(a)}" target="_blank" rel="noopener">solscan ↗</a></em></div>`;
-      if (f1 && f1.funder) {
-        html += `<div class="link" data-l="funded by · ${f1.sol != null ? f1.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f1.time))}"></div>`;
-        html += `<div class="node f"><div class="dot">1</div><div><b>${esc(f1.funder)}</b><span>first SOL in</span></div><em><a href="https://solscan.io/account/${esc(f1.funder)}" target="_blank" rel="noopener">↗</a></em></div>`;
-        if (f2 && f2.funder) {
-          html += `<div class="link" data-l="funded by · ${f2.sol != null ? f2.sol.toFixed(3) + ' SOL · ' : ''}${esc(when(f2.time))}"></div>`;
-          html += `<div class="node f2"><div class="dot">2</div><div><b>${esc(f2.funder)}</b><span>two hops back</span></div><em><a href="https://solscan.io/account/${esc(f2.funder)}" target="_blank" rel="noopener">↗</a></em></div>`;
-        }
-        html += `</div><div class="verdict">This wallet is linked to <b>${esc(short(f1.funder))}</b>${f2 && f2.funder ? ' and through it to <b>' + esc(short(f2.funder)) + '</b>' : ''}. Anyone can follow that line. A fresh wallet funded through a private route starts the trail at a solver instead.</div>`;
-      } else if (h1.more) {
-        html += `</div><div class="verdict">${h1.txs.toLocaleString()}+ transactions: older than this quick trace pages back. Explorers and analytics tools still reach it.</div>`;
-      } else {
-        html += `</div><div class="verdict ok">No funding trail found yet: this wallet has no history, or its first SOL came in a way this trace doesn't read.</div>`;
-      }
-      out.innerHTML = html;
-    } catch (e) { out.innerHTML = `<div class="ph-empty"><div>Could not read Solana right now (${esc(e.message)}). Try again in a moment.</div></div>`; }
-    $('#trB').disabled = false;
-  }
-
-  // 02: make a real fresh wallet, right here
-  function WAL() { return window.MarketsWallet; }
-  $('#mkW').addEventListener('click', async () => {
-    const b = $('#mkW'); b.disabled = true; b.textContent = 'making…';
-    try {
-      const f = await WAL().freshNew(); WAL().use(f.id);
-      const m = $('#made'); m.innerHTML = `<span>${esc(f.label)} · saved in this browser</span><b>${esc(f.pub)}</b><a href="/app#safe">fund it in the safehouse →</a>`; m.classList.add('on');
-      b.textContent = 'make another';
-    } catch (e) { b.textContent = 'try again'; }
-    b.disabled = false;
-  });
-
-  // 03: live route quotes
-  async function quotes() {
-    try {
-      const q = await api('rquote', { from: 'SOL', to: 'SOL', amt: '1' });
-      const o = parseFloat(q.amountOutFormatted); $('#hopOut').textContent = isFinite(o) ? o.toFixed(4) + ' SOL' : '—';
-      $('#hopFee').textContent = isFinite(o) ? ((1 - o) * 100).toFixed(2) + '%' : '—'; $('#hopT').textContent = q.timeEstimate ? '~' + q.timeEstimate + 's' : '—';
-      $('#hopTag').textContent = 'live'; $('#hopTag').className = 'tagl live';
-    } catch { $('#hopTag').textContent = 'quote offline'; $('#hopTag').className = 'tagl off'; }
-    try {
-      const q = await api('rquote', { from: 'SOL', to: 'ZEC', amt: '1' });
-      const o = parseFloat(q.amountOutFormatted); $('#zecOut').textContent = isFinite(o) ? o.toFixed(4) + ' ZEC' : '—'; $('#zecPx').textContent = isFinite(o) ? o.toFixed(3) : '—'; $('#zecT').textContent = q.timeEstimate ? '~' + q.timeEstimate + 's' : '—';
-      $('#zecTag').textContent = 'live'; $('#zecTag').className = 'tagl live';
-    } catch { $('#zecTag').textContent = 'quote offline'; $('#zecTag').className = 'tagl off'; }
-  }
-
-  // 04: the markets, live
-  async function markets() {
-    try {
-      const P = await api('prices');
-      const st = P.stocks.filter(s => s.usd != null && s.ch24 != null).sort((a, b) => Math.abs(b.ch24) - Math.abs(a.ch24)).slice(0, 5);
-      $('#stL').innerHTML = st.map(s => `<li><b>${esc(s.sym)}</b><span>${usd(s.usd)} <i class="${s.ch24 >= 0 ? 'up' : 'dn'}">${pc(s.ch24)}</i></span></li>`).join('') || '<li><b>prices</b><span>—</span></li>';
-      $('#stN').textContent = P.stocks.length + ' listed';
-    } catch { $('#stL').innerHTML = '<li><b>prices offline</b><span>—</span></li>'; }
-    try { const r = await api('perps'); $('#ppL').innerHTML = r.markets.map(m => `<li><b>${esc(m.asset)}-PERP</b><span>${usd(m.price)} <i class="${m.ch24 >= 0 ? 'up' : 'dn'}">${pc(m.ch24)}</i></span></li>`).join(''); } catch { $('#ppL').innerHTML = '<li><b>perps offline</b><span>—</span></li>'; }
-    try { const r = await api('trench'); const L = (r.fresh || []).slice(0, 5); $('#tnL').innerHTML = L.map(c => `<li><b>${esc(c.sym || c.name)}</b><span>${usd(c.mcap)} mc</span></li>`).join('') || '<li><b>quiet right now</b><span>—</span></li>'; } catch { $('#tnL').innerHTML = '<li><b>feed offline</b><span>—</span></li>'; }
-    try { const r = await api('city'); const open = r.items.filter(i => i.status === 'open'); $('#ctOpen').textContent = open.length + ' / ' + r.items.length; $('#ctL').innerHTML = open.slice(0, 3).map(i => `<li><b>${esc(i.name)}</b><span>$${esc(i.sym)}</span></li>`).join(''); } catch { $('#ctOpen').textContent = '—'; }
-  }
-  let ql = false, ml = false;
-  const lazy = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; if (e.target.id === 'routes' && !ql) { ql = true; quotes(); setInterval(() => { if (!document.hidden) quotes(); }, 20000); } if (e.target.id === 'markets' && !ml) { ml = true; markets(); setInterval(() => { if (!document.hidden) markets(); }, 30000); } }), { rootMargin: '300px 0px' });
-  lazy.observe($('#routes')); lazy.observe($('#markets'));
-  WAL() && WAL().restore && WAL().restore();
 })();
 </script>
 </body>
