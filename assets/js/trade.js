@@ -1,5 +1,5 @@
 // Trade: any token Jupiter can route, from the active browser key.
-import { $, $$, boot, api, keys, onKeys, signB64, sendSigned, waitSig, short, fsol, fusd, ago, esc, toast, solscan, B58RE } from './core.js?v=1';
+import { $, $$, boot, api, keys, onKeys, signB64, sendSigned, waitSig, short, fsol, fusd, ago, esc, toast, solscan, B58RE } from './core.js?v=2';
 boot();
 const SOL = 'So11111111111111111111111111111111111111112';
 let tok = null, side = 'buy', slip = 300, held = null, feed = null, tab = 'fresh', lastQ = null, qTimer = 0;

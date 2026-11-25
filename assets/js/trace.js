@@ -1,5 +1,5 @@
 // Trace: a wallet's first funder, that wallet's first funder, and its latest activity.
-import { $, boot, api, keys, short, esc, toast, B58RE } from './core.js?v=1';
+import { $, boot, api, keys, short, esc, toast, B58RE } from './core.js?v=2';
 boot();
 const when = f => f && f.time ? new Date(f.time * 1000).toISOString().slice(0, 10) : '';
 const amt = f => f && f.lamports != null ? (f.lamports / 1e9).toLocaleString('en-US', { maximumFractionDigits: 4 }) + ' SOL' : '';

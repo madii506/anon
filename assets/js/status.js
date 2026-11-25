@@ -1,5 +1,5 @@
 // Status: every dependency, checked from this browser now.
-import { $, boot, api, esc } from './core.js?v=1';
+import { $, boot, api, esc } from './core.js?v=2';
 boot();
 const SOL = 'So11111111111111111111111111111111111111112', USDC = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 const CHECKS = [

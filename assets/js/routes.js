@@ -1,5 +1,5 @@
 // Routes: NEAR Intents 1Click, keyless. Fund a key from SOL, USDC or ZEC; cash a key out to any address.
-import { $, $$, boot, api, keys, onKeys, sendSol, short, esc, toast, B58RE } from './core.js?v=1';
+import { $, $$, boot, api, keys, onKeys, sendSol, short, esc, toast, B58RE } from './core.js?v=2';
 boot();
 let mode = 'in', step = 'quote', dep = null, poll = 0;
 const ZEC = /^(t1|t3)[1-9A-HJ-NP-Za-km-z]{33}$|^(zs1|u1)[02-9ac-hj-np-z]{60,240}$/;

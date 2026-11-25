@@ -131,7 +131,32 @@ export function splitWords(el) {
   walk(el);
 }
 
+// numbers that count to their new value instead of jumping
+export function countTo(el, to, fmt = v => Math.round(v).toLocaleString('en-US'), ms = 900) {
+  if (!el) return; const from = +(el.dataset.v || 0); el.dataset.v = to;
+  if (RM || from === to) { el.textContent = fmt(to); return; }
+  const t0 = performance.now(); const step = t => { const p = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(from + (to - from) * e); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+}
+// the ambient layer every page shares: drifting dust, a scroll bar, a ring that follows the pointer
+function ambient() {
+  const bar = document.createElement('div'); bar.className = 'prog'; document.body.appendChild(bar);
+  const onS = () => { const h = document.documentElement.scrollHeight - innerHeight; bar.style.setProperty('--p', h > 0 ? (scrollY / h).toFixed(4) : 0); }; onS(); addEventListener('scroll', onS, { passive: true });
+  if (!RM) {
+    const c = document.createElement('canvas'); c.className = 'dust'; c.setAttribute('aria-hidden', 'true'); document.body.appendChild(c);
+    const g = c.getContext('2d'); let W = 0, H = 0, P = [], last = 0;
+    const size = () => { const d = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; c.width = W * d; c.height = H * d; g.setTransform(d, 0, 0, d, 0, 0); P = Array.from({ length: Math.round(W * H / 16000) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.3 + .3, vx: (Math.random() - .5) * 6, vy: -3 - Math.random() * 8, a: Math.random() * .5 + .1, tw: Math.random() * 6.28 })); };
+    size(); addEventListener('resize', size);
+    const loop = t => { requestAnimationFrame(loop); if (document.hidden || t - last < 40) return; const dt = Math.min(.1, (t - last) / 1000); last = t; g.clearRect(0, 0, W, H); for (const p of P) { p.x += p.vx * dt; p.y += p.vy * dt; p.tw += dt * 1.6; if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; } if (p.x < -4) p.x = W + 4; if (p.x > W + 4) p.x = -4; g.globalAlpha = p.a * (.6 + .4 * Math.sin(p.tw)); g.fillStyle = '#fff'; g.fillRect(p.x, p.y, p.r, p.r); } };
+    requestAnimationFrame(loop);
+    if (matchMedia('(pointer:fine)').matches) {
+      const ring = document.createElement('div'); ring.className = 'ring'; ring.setAttribute('aria-hidden', 'true'); document.body.appendChild(ring);
+      addEventListener('pointermove', e => { ring.style.setProperty('--rx', e.clientX + 'px'); ring.style.setProperty('--ry', e.clientY + 'px'); ring.classList.toggle('hot', !!(e.target.closest && e.target.closest('a, button, label, input, select, textarea, summary, [data-copy]'))); }, { passive: true });
+      document.addEventListener('pointerleave', () => { ring.style.setProperty('--rx', '-100px'); });
+    }
+  }
+}
 export function boot() {
+  ambient();
   const top = $('#top'), sheet = $('#sheet'), mb = $('#menuBtn');
   const onScroll = () => top && top.classList.toggle('solid', scrollY > 10); onScroll(); addEventListener('scroll', onScroll, { passive: true });
   if (mb) mb.addEventListener('click', () => { const o = !sheet.classList.contains('open'); sheet.classList.toggle('open', o); mb.setAttribute('aria-expanded', o); });

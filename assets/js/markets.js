@@ -1,5 +1,5 @@
 // Markets: every tokenized stock and ETF the API prices, searchable, each one a link into Trade.
-import { $, $$, boot, api, fusd, esc } from './core.js?v=1';
+import { $, $$, boot, api, fusd, esc } from './core.js?v=2';
 boot();
 let all = [], kind = 'all', sort = 'mcap';
 function paint() {

@@ -1,5 +1,5 @@
 // The live pump.fun feed (PumpPortal's public websocket, opened from this browser) and the crowd that shows it.
-import { $, RM, short } from './core.js?v=1';
+import { $, RM, short } from './core.js?v=2';
 
 // ---------- the feed: one socket, many listeners ----------
 const L = new Set(); let ws = null, opened = false, backoff = 2000, state = 'connecting';
@@ -31,6 +31,8 @@ function connect() {
   ws.onclose = () => { if (opened) setState('reconnecting'); opened = false; ws = null; setTimeout(connect, backoff); backoff = Math.min(30000, backoff * 1.7); };
   ws.onerror = () => { };
 }
+// a tag with the wallet and what it did, and no coin names
+export const evTag = ev => ev.kind === 'create' ? `${short(ev.who)} launched a coin` : `${short(ev.who)} ${ev.kind === 'buy' ? 'bought' : 'sold'} ${ev.sol < .01 ? ev.sol.toFixed(4) : ev.sol.toFixed(2)} SOL`;
 export const evText = ev => ev.kind === 'create' ? `${short(ev.who)} launched $${String(ev.sym).slice(0, 10)}` : `${short(ev.who)} ${ev.kind === 'buy' ? 'bought' : 'sold'} ${ev.sol < .01 ? ev.sol.toFixed(4) : ev.sol.toFixed(2)} SOL of $${String(ev.sym).slice(0, 10)}`;
 
 // ---------- the crowd: rows of faceless busts; an event lights one and pins its wallet ----------

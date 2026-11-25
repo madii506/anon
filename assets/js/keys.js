@@ -1,5 +1,5 @@
 // Keys: make, restore, export, send, burn. Everything happens in this page.
-import { $, $$, boot, api, keys, onKeys, makeKey, exportKey, restoreKey, short, fsol, fusd, esc, toast, copy, sendSol, waitSig, solscan, B58RE } from './core.js?v=1';
+import { $, $$, boot, api, keys, onKeys, makeKey, exportKey, restoreKey, short, fsol, fusd, esc, toast, copy, sendSol, waitSig, solscan, B58RE } from './core.js?v=2';
 boot();
 const bal = new Map(); let confirmBurn = null;
 

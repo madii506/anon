@@ -1,5 +1,5 @@
 // Launch: a pump.fun coin from the active browser key. The mint key is made here; both keys sign here.
-import { $, $$, boot, api, keys, onKeys, makeKey, unb58, signB64, sendSigned, waitSig, short, fsol, esc, toast, copy, solscan } from './core.js?v=1';
+import { $, $$, boot, api, keys, onKeys, makeKey, unb58, signB64, sendSigned, waitSig, short, fsol, esc, toast, copy, solscan } from './core.js?v=2';
 boot();
 let img = null, solNow = null;
 const LK = 'anon:launched';
