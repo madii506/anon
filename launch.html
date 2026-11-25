@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>anon</title>
+<meta name="description" content="Launch a pump.fun coin from a key in your browser. No pump.fun account, no wallet to connect.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="anon">
+<meta property="og:description" content="Launch a pump.fun coin from a key in your browser. No pump.fun account, no wallet to connect.">
+<meta property="og:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=1">
+</head>
+<body class="">
+<!-- header -->
+<header class="top" id="top">
+  <a class="brand flick" href="/" aria-label="anon home"><i aria-hidden="true"></i>anon</a>
+  <nav class="nav" aria-label="Site">
+    <a href="/launch" data-p="launch" class="on" aria-current="page">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs">Docs</a><a href="/status" data-p="status">Status</a>
+  </nav>
+  <div class="tools">
+    <a class="keychip" id="keyChip" href="/keys" title="Keys made in this browser"><span class="dot"></span><span class="kt">No key yet</span></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><i></i><i></i></button>
+  </div>
+</header>
+<nav class="sheet" id="sheet" aria-label="Menu">
+  <a href="/" data-p="home">Home</a><a href="/launch" data-p="launch" class="on" aria-current="page">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs">Docs</a><a href="/status" data-p="status">Status</a>
+</nav>
+<!-- /header -->
+<main>
+<section class="phead"><div class="wrap"><span class="eb rv"><b>launch</b> — pump.fun, no account</span><h1 class="split">Launch a coin. <em>Keep your name.</em></h1><p class="lede rv" style="--d:.1s">Your image, name and ticker go to pump.fun's IPFS, PumpPortal builds the create transaction for your browser key, and you sign it here with that key and the new coin's mint key.</p></div></section>
+<section class="wrap" style="padding-bottom:90px">
+
+<div class="app">
+  <div class="panel">
+    <form class="stack" id="lForm" autocomplete="off">
+      <div class="row2" style="align-items:stretch">
+        <label class="drop" id="lDrop" for="lImg"><span id="lDropIn"><b>Add an image</b><br><small>PNG, JPG or WEBP · square works best</small></span><input type="file" id="lImg" accept="image/png,image/jpeg,image/webp,image/gif" class="sr"></label>
+        <div class="stack">
+          <label class="field"><span>Name</span><div class="inp"><input id="lName" maxlength="32" placeholder="up to 32 characters"></div></label>
+          <label class="field"><span>Ticker</span><div class="inp"><em>$</em><input id="lSym" maxlength="10" placeholder="up to 10 letters"></div></label>
+        </div>
+      </div>
+      <label class="field"><span>Description <small class="dim">(optional)</small></span><textarea class="ta" id="lDesc" maxlength="500" placeholder="What is it?"></textarea></label>
+      <div class="row2">
+        <label class="field"><span>X link <small class="dim">(optional)</small></span><div class="inp"><input id="lX" placeholder="https://x.com/…"></div></label>
+        <label class="field"><span>Telegram <small class="dim">(optional)</small></span><div class="inp"><input id="lTg" placeholder="https://t.me/…"></div></label>
+      </div>
+      <div class="row2">
+        <label class="field"><span>Website <small class="dim">(optional)</small></span><div class="inp"><input id="lWeb" placeholder="https://…"></div></label>
+        <label class="field"><span>First buy <small class="dim">(optional)</small></span><div class="inp"><input id="lBuy" inputmode="decimal" placeholder="0"><em>SOL</em></div></label>
+      </div>
+      <button class="btn btn-w" type="submit" id="lGo">Launch it</button>
+      <p class="msg" id="lMsg"></p>
+    </form>
+  </div>
+  <div>
+    <div class="panel">
+      <h3>The key that launches it</h3><p class="ph-sub">The coin's creator on-chain is this key, not you.</p>
+      <div class="kv2"><div><span>Key</span><b class="mono" id="lKey">no key yet</b></div><div><span>SOL</span><b class="mono" id="lSol">—</b></div><div><span>Needs</span><b class="mono" id="lNeed">—</b></div></div>
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-g btn-sm" type="button" id="lMake">Make a fresh key</button><button class="btn btn-g btn-sm" type="button" id="lCopy">Copy address</button><button class="btn btn-g btn-sm" type="button" id="lRef">Refresh</button></div>
+      <p class="note" style="margin-top:12px">Send it a little SOL from an exchange or through a route first. Creating a coin costs network rent and fees, under 0.02 SOL, plus your first buy.</p>
+    </div>
+    <div class="panel">
+      <h3>What happens</h3>
+      <div class="steps4" id="lSteps">
+        <div data-st="0"><span><b>A mint key is made here</b><small>The coin's address, made in this browser.</small></span></div>
+        <div data-st="1"><span><b>pump.fun's IPFS stores the image</b><small>Name, ticker, description and links go with it.</small></span></div>
+        <div data-st="2"><span><b>PumpPortal builds the create</b><small>For your key's public address only.</small></span></div>
+        <div data-st="3"><span><b>You sign and it goes to Solana</b><small>With your key and the mint key, in this page.</small></span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Launched from this browser</h3>
+      <div class="list" id="lMine"><div class="ph">Nothing launched from here yet.</div></div>
+    </div>
+  </div>
+</div>
+</section>
+</main>
+<script type="module" src="/assets/js/launch.js?v=1"></script>
+</body>
+</html>

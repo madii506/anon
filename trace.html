@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>anon</title>
+<meta name="description" content="Trace any Solana wallet: who funded it first, who funded that, and its latest activity. See how wallets get linked.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="anon">
+<meta property="og:description" content="Trace any Solana wallet: who funded it first, who funded that, and its latest activity. See how wallets get linked.">
+<meta property="og:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=1">
+</head>
+<body class="">
+<!-- header -->
+<header class="top" id="top">
+  <a class="brand flick" href="/" aria-label="anon home"><i aria-hidden="true"></i>anon</a>
+  <nav class="nav" aria-label="Site">
+    <a href="/launch" data-p="launch">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace" class="on" aria-current="page">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs">Docs</a><a href="/status" data-p="status">Status</a>
+  </nav>
+  <div class="tools">
+    <a class="keychip" id="keyChip" href="/keys" title="Keys made in this browser"><span class="dot"></span><span class="kt">No key yet</span></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><i></i><i></i></button>
+  </div>
+</header>
+<nav class="sheet" id="sheet" aria-label="Menu">
+  <a href="/" data-p="home">Home</a><a href="/launch" data-p="launch">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace" class="on" aria-current="page">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs">Docs</a><a href="/status" data-p="status">Status</a>
+</nav>
+<!-- /header -->
+<main>
+<section class="phead"><div class="wrap"><span class="eb rv"><b>trace</b> — two hops back</span><h1 class="split">Who's behind <em>a wallet?</em></h1><p class="lede rv" style="--d:.1s">Paste any Solana address. anon reads its first funder, then that wallet's first funder, and its latest transactions, straight from the chain.</p></div></section>
+<section class="wrap" style="padding-bottom:90px">
+
+<form id="trForm" style="display:flex;gap:10px;flex-wrap:wrap" autocomplete="off"><label class="inp" style="flex:1;min-width:240px"><span class="sr">Solana wallet address</span><input id="trIn" placeholder="Paste a Solana wallet address" spellcheck="false"></label><button class="btn btn-w" type="submit" id="trGo">Trace it</button><button class="btn btn-g" type="button" id="trMine">Trace my active key</button></form>
+<p class="msg" id="trMsg" style="margin-top:12px"></p>
+<div class="hops hide" id="hops" style="margin-top:14px">
+  <div class="hop"><span class="k">the wallet</span><span class="a" id="h0">—</span><small id="h0s"></small></div><div class="ar">←</div>
+  <div class="hop"><span class="k">funded first by</span><span class="a" id="h1">—</span><small id="h1s"></small></div><div class="ar">←</div>
+  <div class="hop"><span class="k">which was funded by</span><span class="a" id="h2">—</span><small id="h2s"></small></div>
+</div>
+<div class="app" style="margin-top:16px">
+  <div class="panel"><h3>Latest activity</h3><p class="ph-sub">The wallet's ten most recent transactions.</p><div class="list" id="acts"><div class="ph">Trace a wallet to see it.</div></div></div>
+  <div class="panel"><h3>Reading the result</h3><div class="steps4"><div><span><b>An exchange as first funder</b><small>The exchange knows who withdrew. Nobody else does, unless they ask it.</small></span></div><div><span><b>A personal wallet as first funder</b><small>The link is public forever. Anyone can follow it.</small></span></div><div><span><b>A route's deposit wallet</b><small>The trail ends at the route. That's what anon's routes are for.</small></span></div></div></div>
+</div>
+
+</section>
+</main>
+<script type="module" src="/assets/js/trace.js?v=1"></script>
+</body>
+</html>

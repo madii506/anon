@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>anon</title>
+<meta name="description" content="How anon works: keys in your browser, launching on pump.fun, trading through Jupiter, routes through NEAR Intents, and the security model.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="anon">
+<meta property="og:description" content="How anon works: keys in your browser, launching on pump.fun, trading through Jupiter, routes through NEAR Intents, and the security model.">
+<meta property="og:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=1">
+</head>
+<body class="">
+<!-- header -->
+<header class="top" id="top">
+  <a class="brand flick" href="/" aria-label="anon home"><i aria-hidden="true"></i>anon</a>
+  <nav class="nav" aria-label="Site">
+    <a href="/launch" data-p="launch">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs" class="on" aria-current="page">Docs</a><a href="/status" data-p="status">Status</a>
+  </nav>
+  <div class="tools">
+    <a class="keychip" id="keyChip" href="/keys" title="Keys made in this browser"><span class="dot"></span><span class="kt">No key yet</span></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><i></i><i></i></button>
+  </div>
+</header>
+<nav class="sheet" id="sheet" aria-label="Menu">
+  <a href="/" data-p="home">Home</a><a href="/launch" data-p="launch">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs" class="on" aria-current="page">Docs</a><a href="/status" data-p="status">Status</a>
+</nav>
+<!-- /header -->
+<main>
+<section class="phead"><div class="wrap"><span class="eb rv"><b>docs</b> — how it works</span><h1 class="split">How it <em>works.</em></h1><p class="lede rv" style="--d:.1s">Everything anon does, in order, with nothing left out.</p></div></section>
+<section class="wrap" style="padding-bottom:90px">
+<div class="docs"><aside id="dAside"><a href="#overview">Overview</a><a href="#keys">Keys</a><a href="#funding">Funding a key</a><a href="#launching">Launching</a><a href="#trading">Trading</a><a href="#routes">Routes</a><a href="#security">Security model</a><a href="#server">What the server does</a><a href="#limits">Limits</a></aside><div class="doc"><section id="overview"><h2>Overview</h2><p>anon lets you launch pump.fun coins and trade any Solana token from keys that live in your browser. There is no account, no wallet to connect and no key import. The server builds transactions for a public address; your browser signs them; Solana receives them.</p>
+<ul><li><b>Launch</b>: a pump.fun coin from a browser key, with your image, name, ticker and links.</li><li><b>Trade</b>: any token Jupiter can route, pump.fun coins included.</li><li><b>Keys</b>: make, fund, export, send and burn keys.</li><li><b>Routes</b>: fund a key or cash out through NEAR Intents.</li></ul></section><section id="keys"><h2>Keys</h2><p>A key is an ed25519 keypair made with your browser's WebCrypto (or the Solana library where WebCrypto lacks ed25519). It is stored in this browser's <code>localStorage</code> under <code>anon:keys</code>. The secret never leaves the page.</p>
+<h3>Export and restore</h3><p>Export saves a JSON file with the secret as base58 and as the 64-byte array <code>solana-keygen</code> uses, so it opens in other wallets. Restore reads that file, a byte array, or a base58 secret.</p>
+<h3>Burn</h3><p>Burn deletes the key from this browser. Funds on its address stay on-chain; without an export they are out of reach for good.</p></section><section id="funding"><h2>Funding a key</h2><p>Send SOL to the key's address from anywhere. An exchange withdrawal is the cleanest: your main wallet never appears in the key's history. To fund from USDC or ZEC, or to make the first funder a route's deposit wallet, use Routes.</p></section><section id="launching"><h2>Launching</h2><ol><li>The page makes a mint keypair for the new coin.</li><li>The server uploads your image and metadata to pump.fun's IPFS endpoint.</li><li>PumpPortal's local transaction API builds the create transaction for your key, with your optional first buy.</li><li>Your browser signs with your key and the mint key and sends it to Solana.</li></ol>
+<p>Creation needs a little SOL for rent and fees (under 0.02 SOL) plus the first buy. The coin's creator on-chain is your browser key.</p></section><section id="trading"><h2>Trading</h2><p>Quotes and swap transactions come from Jupiter's API. Buys spend SOL; sells swap back into SOL. Slippage is yours to set. The swap is signed by the active key in this page and sent through the server's RPC relay.</p></section><section id="routes"><h2>Routes</h2><p>Routes use NEAR Intents 1Click without an API key. You get a quote, then a one-time deposit address. Send the exact amount, and the route pays out to the address you chose. Supported: SOL, USDC (Solana) and ZEC, in both directions.</p><p>Cashing out from a key sends the SOL from the key to the deposit address automatically after you confirm.</p></section><section id="security"><h2>Security model</h2><ul><li>Keys exist only in this browser. Anyone with access to this browser profile can use them: lock your device.</li><li>The server never receives a secret. It sees public addresses, the actions you ask for and signed transactions.</li><li>Every transaction is built by Jupiter or PumpPortal and checked by Solana. Review amounts before you sign.</li><li>The site loads no third-party scripts, sets no cookies and runs no analytics.</li></ul></section><section id="server"><h2>What the server does</h2><p>One function, <code>/api/m</code>, with these actions: <code>quote</code>, <code>swap</code>, <code>send</code>, <code>status</code>, <code>wallet</code>, <code>token</code>, <code>trench</code>, <code>launch</code>, <code>route</code>, <code>rquote</code>, <code>rstatus</code>, <code>rsubmit</code>, <code>bh</code>, <code>trace</code>, <code>prices</code>. None of them takes a private key.</p></section><section id="limits"><h2>Limits</h2><p>Everything on Solana is public. Fresh keys break the link to you; they don't hide what the key does. Funding from your main wallet, matching timing and matching amounts can all re-link a key. pump.fun's upload endpoint is outside our control.</p></section></div></div>
+</section>
+</main>
+<script type="module" src="/assets/js/docs.js?v=1"></script>
+</body>
+</html>

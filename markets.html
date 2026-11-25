@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>anon</title>
+<meta name="description" content="Tokenized stocks, ETFs, gold and SOL, priced live. Trade any of them from a key in your browser, no broker account.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="anon">
+<meta property="og:description" content="Tokenized stocks, ETFs, gold and SOL, priced live. Trade any of them from a key in your browser, no broker account.">
+<meta property="og:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://anondot.vercel.app/assets/img/og.jpg">
+<link rel="icon" href="/assets/img/favicon-64.png" sizes="64x64" type="image/png">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=1">
+</head>
+<body class="">
+<!-- header -->
+<header class="top" id="top">
+  <a class="brand flick" href="/" aria-label="anon home"><i aria-hidden="true"></i>anon</a>
+  <nav class="nav" aria-label="Site">
+    <a href="/launch" data-p="launch">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets" class="on" aria-current="page">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs">Docs</a><a href="/status" data-p="status">Status</a>
+  </nav>
+  <div class="tools">
+    <a class="keychip" id="keyChip" href="/keys" title="Keys made in this browser"><span class="dot"></span><span class="kt">No key yet</span></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><i></i><i></i></button>
+  </div>
+</header>
+<nav class="sheet" id="sheet" aria-label="Menu">
+  <a href="/" data-p="home">Home</a><a href="/launch" data-p="launch">Launch</a><a href="/trade" data-p="trade">Trade</a><a href="/markets" data-p="markets" class="on" aria-current="page">Markets</a><a href="/watch" data-p="watch">Watch</a><a href="/keys" data-p="keys">Keys</a><a href="/routes" data-p="routes">Routes</a><a href="/trace" data-p="trace">Trace</a><a href="/privacy" data-p="privacy">Privacy</a><a href="/docs" data-p="docs">Docs</a><a href="/status" data-p="status">Status</a>
+</nav>
+<!-- /header -->
+<main>
+<section class="phead"><div class="wrap"><span class="eb rv"><b>markets</b> — beyond the trenches</span><h1 class="split">Every market. <em>No broker.</em></h1><p class="lede rv" style="--d:.1s">Tokenized stocks and ETFs live on Solana as tokens. Pick one and trade it from your browser key, any hour, with no account and no name.</p></div></section>
+<section class="wrap" style="padding-bottom:90px">
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+  <label class="inp" style="flex:1;min-width:220px;max-width:420px"><span class="sr">Search markets</span><input id="mQ" placeholder="Search NVDA, gold, S&amp;P…"></label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg" id="mKind"><button class="on" data-k="all" type="button">All</button><button data-k="stock" type="button">Stocks</button><button data-k="etf" type="button">ETFs</button></div>
+  <div class="seg" id="mSort"><button class="on" data-s="mcap" type="button">Size</button><button data-s="ch" type="button">Movers</button><button data-s="sym" type="button">A–Z</button></div></div>
+</div>
+<p class="note" id="mNote" style="margin:14px 0 0">Reading live prices…</p>
+<div class="mkgrid" id="mGrid" style="margin-top:18px"></div>
+
+</section>
+</main>
+<script type="module" src="/assets/js/markets.js?v=1"></script>
+</body>
+</html>
