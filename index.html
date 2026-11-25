@@ -16,9 +16,10 @@
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/img/hero-crowd.webp" as="image">
-<link rel="stylesheet" href="/assets/css/site.css?v=1">
+<link rel="stylesheet" href="/assets/css/site.css?v=2">
 </head>
 <body class="home">
+<div class="intro" id="intro" aria-hidden="true"><canvas id="introCv"></canvas><button class="skip" id="introSkip" type="button" aria-label="Skip the intro"><svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5l5 5-5 5M11 5l5 5-5 5"/></svg></button></div>
 <!-- header -->
 <header class="top" id="top">
   <a class="brand flick" href="/" aria-label="anon home"><i aria-hidden="true"></i>anon</a>
@@ -40,8 +41,9 @@
 <section class="hero" id="hero">
   <div class="hero-bg" id="heroBg" aria-hidden="true"></div>
   <div class="hero-spot" id="heroSpot" aria-hidden="true"></div>
+  <div class="hero-scan" aria-hidden="true"></div>
+  <div class="hero-tags" id="heroTags" aria-hidden="true"></div>
   <div class="hero-in">
-    <div class="kicker fade-up" style="--d:.1s"><i></i>no wallet · no account · no key imports<i></i></div>
     <h1 class="word fl" aria-label="anon"><span style="--i:0">a</span><span style="--i:1">n</span><span style="--i:2">o</span><span style="--i:3">n</span></h1>
     <p class="sub fade-up" style="--d:.85s">Launch and trade <b>in private</b> by using our protocol.</p>
     <div class="ctas fade-up" style="--d:1s">
@@ -143,7 +145,7 @@
       <div class="s rv" style="--d:.06s"><b id="stWallets">0</b><span>different wallets tagged</span></div>
       <div class="s rv" style="--d:.12s"><b id="stLaunch">0</b><span>coins launched while you watched</span></div>
     </div>
-    <div class="tape rv" style="margin-top:16px"><div class="tr2 th"><span>time</span><span>wallet</span><span>did</span><span>size</span><span>coin</span></div><div id="tape"><div class="ph" style="margin:12px">The tape fills as trades land.</div></div></div>
+    <div class="tape rv" style="margin-top:16px"><div class="tr2 th t4"><span>time</span><span>wallet</span><span>did</span><span>size</span></div><div id="tape"><div class="ph" style="margin:12px">The tape fills as trades land.</div></div></div>
     <div style="display:flex;justify-content:center;margin-top:22px"><a class="btn btn-g" href="/watch">Watch the full tape <span class="arr">→</span></a></div>
   </div>
 </section>
@@ -196,10 +198,10 @@
     </div>
     <div class="story">
       <div class="stick" aria-hidden="true">
-        <div class="scene on" data-s="0"><div class="orb"><span class="big" style="font-size:64px">key</span></div><span class="cap" id="scKey">a key, made in this browser</span></div>
-        <div class="scene" data-s="1"><div class="orb"><span class="big" style="font-size:58px">fund</span></div><span class="cap">from an exchange, any wallet, or a route</span></div>
+        <div class="scene on" data-s="0"><div class="orb"><span class="keyline" id="scKeyLine">…</span></div><span class="cap" id="scKey">a key, made in this browser</span></div>
+        <div class="scene" data-s="1"><div class="flow3"><i style="--y:30%;--dl:0s"></i><i style="--y:48%;--dl:.5s"></i><i style="--y:66%;--dl:1s"></i><i style="--y:40%;--dl:1.5s"></i><i style="--y:58%;--dl:2s"></i></div><div class="orb"><span class="big" style="font-size:58px">fund</span></div><span class="cap">from an exchange, any wallet, or a route</span></div>
         <div class="scene" data-s="2"><svg viewBox="0 0 320 180" width="78%" fill="none"><path class="draw" d="M8 150 C 50 140, 70 120, 100 126 S 150 60, 180 80 S 230 20, 312 26" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="312" cy="26" r="6" fill="#fff"/></svg><span class="cap">launch a coin or trade any token</span></div>
-        <div class="scene" data-s="3"><span class="big">gone.</span><span class="cap">cash out anywhere, then burn the key</span></div>
+        <div class="scene gone" data-s="3"><span class="big">gone.</span><span class="cap">cash out anywhere, then burn the key</span></div>
       </div>
       <div class="steps">
         <div class="step on" data-s="0"><span class="n">01</span><h3>Make a key</h3><p>One click. Your browser makes it and keeps it. Make a new one for every launch if you like: each one starts with no history.</p></div>
@@ -220,9 +222,11 @@
       <p class="lede rv" style="--d:.1s">Launch a pump.fun coin from a browser key with your image, name, ticker and links, and an optional first buy. Or pick any coin and trade it from the same key. No pump.fun account is involved.</p>
       <div class="ctas rv" style="justify-content:flex-start;--d:.15s"><a class="btn btn-w" href="/launch" data-mag>Launch a coin <span class="arr">→</span></a><a class="btn btn-g" href="/trade">Open the trade page</a></div>
     </div>
-    <div class="rv" style="--d:.1s">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="k">newest on pump.fun</span><span class="chip" id="coinChip"><span class="dot"></span><span id="coinTxt">reading</span></span></div>
-      <div class="coins" id="coins"><div class="ph">Reading the newest coins…</div></div>
+    <div class="pipe2 rv" style="--d:.1s" aria-hidden="true">
+      <div class="p2 st"><span class="k">1 · mint key</span><div class="p2bar"><i></i></div><span class="hx" data-hx="44"></span></div>
+      <div class="p2 st"><span class="k">2 · image to IPFS</span><div class="p2bar"><i></i></div><div class="p2img"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+      <div class="p2 st"><span class="k">3 · PumpPortal builds it</span><div class="p2bar"><i></i></div><span class="hx" data-hx="64"></span></div>
+      <div class="p2 st"><span class="k">4 · signed here, sent to Solana</span><div class="p2bar"><i></i></div><div class="p2sig"><b></b><b></b></div></div>
     </div>
   </div>
 </section>
@@ -327,6 +331,6 @@
   </div>
 </section>
 </main>
-<script type="module" src="/assets/js/home.js?v=1"></script>
+<script type="module" src="/assets/js/home.js?v=2"></script>
 </body>
 </html>

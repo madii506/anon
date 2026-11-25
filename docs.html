@@ -15,7 +15,7 @@
 <link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=1">
+<link rel="stylesheet" href="/assets/css/site.css?v=2">
 </head>
 <body class="">
 <!-- header -->
@@ -43,6 +43,6 @@
 <p>Creation needs a little SOL for rent and fees (under 0.02 SOL) plus the first buy. The coin's creator on-chain is your browser key.</p></section><section id="trading"><h2>Trading</h2><p>Quotes and swap transactions come from Jupiter's API. Buys spend SOL; sells swap back into SOL. Slippage is yours to set. The swap is signed by the active key in this page and sent through the server's RPC relay.</p></section><section id="routes"><h2>Routes</h2><p>Routes use NEAR Intents 1Click without an API key. You get a quote, then a one-time deposit address. Send the exact amount, and the route pays out to the address you chose. Supported: SOL, USDC (Solana) and ZEC, in both directions.</p><p>Cashing out from a key sends the SOL from the key to the deposit address automatically after you confirm.</p></section><section id="security"><h2>Security model</h2><ul><li>Keys exist only in this browser. Anyone with access to this browser profile can use them: lock your device.</li><li>The server never receives a secret. It sees public addresses, the actions you ask for and signed transactions.</li><li>Every transaction is built by Jupiter or PumpPortal and checked by Solana. Review amounts before you sign.</li><li>The site loads no third-party scripts, sets no cookies and runs no analytics.</li></ul></section><section id="server"><h2>What the server does</h2><p>One function, <code>/api/m</code>, with these actions: <code>quote</code>, <code>swap</code>, <code>send</code>, <code>status</code>, <code>wallet</code>, <code>token</code>, <code>trench</code>, <code>launch</code>, <code>route</code>, <code>rquote</code>, <code>rstatus</code>, <code>rsubmit</code>, <code>bh</code>, <code>trace</code>, <code>prices</code>. None of them takes a private key.</p></section><section id="limits"><h2>Limits</h2><p>Everything on Solana is public. Fresh keys break the link to you; they don't hide what the key does. Funding from your main wallet, matching timing and matching amounts can all re-link a key. pump.fun's upload endpoint is outside our control.</p></section></div></div>
 </section>
 </main>
-<script type="module" src="/assets/js/docs.js?v=1"></script>
+<script type="module" src="/assets/js/docs.js?v=2"></script>
 </body>
 </html>
