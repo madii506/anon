@@ -630,6 +630,36 @@ async function sparks(list) {
   return { sparks: o };
 }
 
+// launch any coin on pump.fun from a key that lives in the user's browser: put the image and metadata on pump.fun's
+// IPFS, then have PumpPortal build the create transaction for that key. The browser makes the mint key, signs with
+// both keys and sends it. Nothing is stored here and no key ever arrives here.
+const LINK_OK = s => !s || /^https:\/\/[^\s<>"']{3,200}$/.test(s);
+async function launch(b) {
+  const user = String(b.user || ''), mint = String(b.mint || '');
+  if (!B58.test(user)) fail('make a key first');
+  if (!B58.test(mint)) fail('bad mint address');
+  const name = String(b.name || '').trim(), sym = String(b.sym || '').trim().replace(/^\$/, ''), desc = String(b.desc || '').trim();
+  if (name.length < 1 || name.length > 32) fail('give the coin a name of up to 32 characters');
+  if (!/^[A-Za-z0-9]{1,10}$/.test(sym)) fail('the ticker is 1 to 10 letters or numbers');
+  if (desc.length > 500) fail('keep the description under 500 characters');
+  const x = String(b.x || '').trim(), tg = String(b.tg || '').trim(), web = String(b.web || '').trim();
+  if (!LINK_OK(x) || !LINK_OK(tg) || !LINK_OK(web)) fail('links start with https://');
+  const buy = Math.round(Math.max(0, Math.min(10, +b.buy || 0)) * 1e4) / 1e4;
+  const m = /^data:image\/(png|jpeg|webp|gif);base64,([A-Za-z0-9+/=]+)$/.exec(String(b.image || '')); if (!m) fail('add an image for the coin');
+  const img = Buffer.from(m[2], 'base64'); if (img.length < 200 || img.length > 1.5e6) fail('the image must be under 1.5 MB');
+  const fd = new FormData();
+  fd.append('file', new Blob([img], { type: 'image/' + m[1] }), sym.toLowerCase() + '.' + (m[1] === 'jpeg' ? 'jpg' : m[1]));
+  fd.append('name', name); fd.append('symbol', sym); fd.append('description', desc);
+  fd.append('twitter', x); fd.append('telegram', tg); fd.append('website', web); fd.append('showName', 'true');
+  let ij = null, ip = null;
+  try { ip = await fetch('https://pump.fun/api/ipfs', { method: 'POST', body: fd, signal: AbortSignal.timeout(25000) }); ij = await ip.json().catch(() => null); } catch (e) { fail('pump.fun did not answer the image upload, try again'); }
+  if (!ip.ok || !ij || !ij.metadataUri) fail(`pump.fun did not take the image (${ip.status})`);
+  const r = await fetch('https://pumpportal.fun/api/trade-local', { method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(25000),
+    body: JSON.stringify({ publicKey: user, action: 'create', tokenMetadata: { name, symbol: sym, uri: ij.metadataUri }, mint, denominatedInSol: 'true', amount: buy, slippage: 10, priorityFee: 0.0005, pool: 'pump' }) });
+  if (r.status !== 200) { const t = await r.text().catch(() => ''); fail('could not build the launch: ' + (t || r.status).toString().slice(0, 140)); }
+  return { tx: Buffer.from(await r.arrayBuffer()).toString('base64'), uri: ij.metadataUri, mint };
+}
+
 module.exports = async (req, res) => {
   res.setHeader('access-control-allow-origin', '*');
   const q = new URL(req.url, 'http://x').searchParams, a = q.get('a');
@@ -654,6 +684,7 @@ module.exports = async (req, res) => {
     if (a === 'cimg') return await cityPhoto(q, res);
     if (a === 'trench') return out(res, 200, await trench(), 'public, s-maxage=2, stale-while-revalidate=8');
     if (a === 'token') return out(res, 200, await tokenInfo(q.get('mint')), 'public, s-maxage=4, stale-while-revalidate=10');
+    if (a === 'launch' && req.method === 'POST') return out(res, 200, await launch(await body(req)));
     if (a === 'claim' && req.method === 'POST') return out(res, 200, await claim(await body(req)));
     if (a === 'confirm' && req.method === 'POST') return out(res, 200, await confirmClaim(await body(req)));
     if (a === 'route' && req.method === 'POST') { const b = await body(req); return out(res, 200, await route(b), b.dry ? 'public, s-maxage=20, stale-while-revalidate=60' : 'no-store'); }
