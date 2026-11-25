@@ -6,50 +6,9 @@ boot();
 const ready = () => document.body.classList.add('ready');
 const fontsIn = document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 900))]) : Promise.resolve();
 
-// ---------- the intro: no words. one figure, the crowd builds, a scan tags every face, all go dark but you ----------
-function intro() {
-  const box = $('#intro'), cv = $('#introCv'); let seen = false; try { seen = sessionStorage.getItem('anon:intro') === '1'; } catch { }
-  if (!box || (seen && !/[?&]intro/.test(location.search)) || RM) { if (box) box.remove(); return Promise.resolve(); }
-  try { sessionStorage.setItem('anon:intro', '1'); } catch { }
-  document.documentElement.classList.add('intro-on');
-  const g = cv.getContext('2d'), grey = new Image(), white = new Image(); grey.src = '/assets/img/sprite-grey.webp'; white.src = '/assets/img/sprite-white.webp';
-  let W, H, D, B = [], me = null, done = false, t0 = 0, raf = 0, SH = null;
-  const shades = n => { SH = []; for (let i = 0; i < n; i++) { const k = .14 + .5 * (i / (n - 1)), c = document.createElement('canvas'); c.width = grey.naturalWidth; c.height = grey.naturalHeight; const x = c.getContext('2d'); x.drawImage(grey, 0, 0); x.globalCompositeOperation = 'source-atop'; x.fillStyle = `rgba(0,0,0,${(1 - k).toFixed(3)})`; x.fillRect(0, 0, c.width, c.height); SH.push(c); } };
-  const size = () => { D = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * D; cv.height = H * D; g.setTransform(D, 0, 0, D, 0, 0);
-    B = []; const rows = W < 640 ? 6 : 8, base = Math.min(H * .2, W * .1);
-    for (let r = 0; r < rows; r++) { const s = .35 + r * (.75 / rows), h = base * s, w = h * .875, y = H * .34 + r * H * (.52 / rows), gap = w * 1.05, n = Math.ceil(W / gap) + 2, off = (r & 1) * gap / 2 - gap;
-      for (let i = 0; i < n; i++) { const x = off + i * gap; if (r === rows - 1 && Math.abs(x - W / 2) < gap * .7) continue; B.push({ x, y, w, h, r, rows, d: Math.hypot(x - W / 2, y - H * .62) }); } }
-    const h = base * 1.35; me = { x: W / 2, y: H * .34 + (rows - 1) * H * (.52 / rows) + h * .08, w: h * .875, h };
-    const far = Math.max(...B.map(b => b.d)) || 1; B.forEach(b => b.k = b.d / far); };
-  size(); addEventListener('resize', size);
-  const ease = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
-  const end = () => { if (done) return; done = true; cancelAnimationFrame(raf); box.classList.add('out'); document.documentElement.classList.remove('intro-on'); setTimeout(() => box.remove(), 1000); resolveIt(); };
-  let resolveIt; const p = new Promise(r => resolveIt = r);
-  const frame = t => {
-    if (done) return; raf = requestAnimationFrame(frame); if (!t0) t0 = t; const s = (t - t0) / 1000;
-    g.clearRect(0, 0, W, H); const ok = grey.complete && white.complete && grey.naturalWidth; if (!ok) { t0 = t; return; }
-    // 0.0 – 1.0: you, alone in the dark
-    const meIn = ease(s / .9), scanX = (s - 2.1) / 1.4 * (W + 200) - 100, dark = ease((s - 3.6) / .7), lift = ease((s - 4.4) / .6);
-    for (const b of B) {
-      const appear = ease((s - .9 - b.k * 1.0) / .45); if (appear <= 0) continue;
-      const tagged = scanX > b.x; const flash = tagged ? Math.max(0, 1 - (scanX - b.x) / 260) : 0;
-      if (!SH || SH.length !== b.rows) shades(b.rows);
-      const a = appear * (1 - dark * .9);
-      g.globalAlpha = a; g.drawImage(SH[b.r], b.x - b.w / 2, b.y - b.h + (1 - appear) * 14, b.w, b.h);
-      if (flash > 0) { g.globalAlpha = flash * a * .85; g.drawImage(white, b.x - b.w / 2, b.y - b.h, b.w, b.h); }
-      if (tagged && s < 3.9) { g.globalAlpha = a * .9; g.fillStyle = 'rgba(20,20,20,.95)'; g.strokeStyle = 'rgba(255,255,255,.35)'; const tw = Math.max(18, b.w * .62), th = Math.max(6, b.h * .12), tx = b.x - tw / 2, ty = b.y - b.h - th - 4; g.beginPath(); g.roundRect ? g.roundRect(tx, ty, tw, th, th / 2) : g.rect(tx, ty, tw, th); g.fill(); g.stroke(); g.fillStyle = 'rgba(255,255,255,.55)'; g.fillRect(tx + th * .7, ty + th * .38, tw * .55, Math.max(1, th * .24)); }
-    }
-    if (scanX > -100 && scanX < W + 100 && s < 3.7) { const gr = g.createLinearGradient(scanX - 60, 0, scanX + 60, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, 'rgba(255,255,255,.22)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha = 1; g.fillStyle = gr; g.fillRect(scanX - 60, H * .25, 120, H * .7); g.fillStyle = 'rgba(255,255,255,.9)'; g.fillRect(scanX, H * .25, 1, H * .7); }
-    g.globalAlpha = meIn * (1 - lift); g.drawImage(white, me.x - me.w / 2, me.y - me.h - lift * 40, me.w, me.h);
-    g.globalAlpha = 1;
-    if (s > 5.0) end();
-  };
-  raf = requestAnimationFrame(frame);
-  $('#introSkip').addEventListener('click', end); box.addEventListener('click', end); addEventListener('keydown', end, { once: true });
-  setTimeout(end, 9000);
-  return p;
-}
-Promise.all([fontsIn, intro()]).then(() => requestAnimationFrame(ready));
+// no intro: the hero opens straight away (an old cached page may still carry the overlay, so drop it)
+{ const old = $('#intro'); if (old) old.remove(); document.documentElement.classList.remove('intro-on'); }
+fontsIn.then(() => requestAnimationFrame(ready));
 
 // ---------- hero: parallax, a soft spotlight, a slow push-in on scroll ----------
 const bg = $('#heroBg'), spot = $('#heroSpot'), hero = $('#hero');
